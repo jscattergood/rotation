@@ -16,16 +16,29 @@
 
 angular.module('app', [
         'ngRoute',
+        'ui.grid',
         'app.controllers',
         'app.directives',
         'app.filters',
         'app.services'
     ])
-    .config(function ($routeProvider, $httpProvider) {
-
-        $routeProvider.when('/', {
-            templateUrl: 'schedule.html',
-            controller: 'scheduleCtrl'
-        }).otherwise('/');
-
+    .config(function ($routeProvider) {
+        $routeProvider
+            .when('/schedule', {
+                templateUrl: 'templates/schedule.html',
+                controller: 'scheduleCtrl'
+            })
+            .when('/rotations', {
+                templateUrl: 'templates/rotations.html',
+                controller: 'rotationsCtrl'
+            })
+            .when('/roles', {
+                templateUrl: 'templates/roles.html',
+                controller: 'rolesCtrl'
+            })
+            .when('/persons', {
+                templateUrl: 'templates/persons.html',
+                controller: 'personsCtrl'
+            })
+            .otherwise('/');
     });

@@ -17,6 +17,7 @@
 package personal.rotation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import personal.rotation.domain.Person;
@@ -27,8 +28,9 @@ import java.util.List;
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
  */
-@RestController
+@Service
 @Transactional
+@RestController
 public class PersonService {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -39,13 +41,19 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    @RequestMapping("/person")
-    public Person getPerson(@RequestParam("id") Integer id) {
+    @RequestMapping("/person/{id}")
+    public Person getPerson(@PathVariable("id") Integer id) {
         return personRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/person", method = RequestMethod.POST)
-    public Person createOrUpdatePerson(@RequestBody Person person) {
+    @RequestMapping(value = "/persons", method = RequestMethod.POST)
+    public Person createPerson(@RequestBody Person person) {
+        return personRepository.save(person);
+    }
+
+    @RequestMapping(value = "/person/{id}", method = RequestMethod.POST)
+    public Person updatePerson(@PathVariable("id") Integer id, @RequestBody Person person) {
+        person.setId(id);
         return personRepository.save(person);
     }
 }

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Rotation Schedule</title>
+        <link href="assets/css/app.css" rel="stylesheet">
+    </head>
+
+    <body ng-app="app">
+        <div class="header" data-ng-controller="headerCtrl">
+            <p class="alignLeft">Rotation Schedule</p>
+            <p class="alignRight">{{ week }}</p>
+        </div>
+        <div>
+            <ul class="nav nav-tabs" data-ng-controller="homeTabCtrl">
+                <li data-ng-class="scheduleTabActive()"><a href="#/schedule">Schedule</a></li>
+                <li data-ng-class="personsTabActive()"><a href="#/persons">Persons</a></li>
+                <li data-ng-class="rolesTabActive()"><a href="#/roles">Roles</a></li>
+                <li data-ng-class="rotationsTabActive()"><a href="#/rotations">Rotations</a></li>
+            </ul>
+            <div data-ng-view class="container"/>
+        </div>
+        <script src="assets/js/app.js"></script>
+    </body>
+</html>

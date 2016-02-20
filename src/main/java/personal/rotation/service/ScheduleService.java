@@ -16,6 +16,7 @@
 
 package personal.rotation.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +27,9 @@ import java.util.Map;
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/18/2016
  */
-@RestController
+@Service
 @Transactional
+@RestController
 public class ScheduleService {
     @RequestMapping("/schedule")
     public Map<String, String> getSchedule() {

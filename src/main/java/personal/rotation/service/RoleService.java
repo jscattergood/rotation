@@ -17,6 +17,7 @@
 package personal.rotation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import personal.rotation.domain.Role;
@@ -27,8 +28,9 @@ import java.util.List;
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
  */
-@RestController
+@Service
 @Transactional
+@RestController
 public class RoleService {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -39,13 +41,19 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    @RequestMapping("/role")
-    public Role getRole(@RequestParam("id") Integer id) {
+    @RequestMapping("/role/{id}")
+    public Role getRole(@PathVariable("id") Integer id) {
         return roleRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/role", method = RequestMethod.POST)
-    public Role createOrUpdateRole(@RequestBody Role role) {
+    @RequestMapping(value = "/roles", method = RequestMethod.POST)
+    public Role createRole(@RequestBody Role role) {
+        return roleRepository.save(role);
+    }
+
+    @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
+    public Role updateRole(@PathVariable("id") Integer id, @RequestBody Role role) {
+        role.setId(id);
         return roleRepository.save(role);
     }
 

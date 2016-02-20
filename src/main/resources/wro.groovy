@@ -16,12 +16,14 @@
 
 groups {
     bootstrap {
-        css "webjar:bootstrap/3.2.0/less/bootstrap.less"
-        js "webjar:jquery/2.1.1/jquery.min.js"
-        js "webjar:angularjs/1.3.8/angular.min.js"
-        js "webjar:angularjs/1.3.8/angular-route.min.js"
-        js "webjar:angularjs/1.3.8/angular-resource.min.js"
-        js "webjar:angularjs/1.3.8/angular-cookies.min.js"
+        css "webjar:bootstrap/3.3.6/css/bootstrap.min.css"
+        js "webjar:jquery/2.2.2/jquery.min.js"
+        js "webjar:angularjs/1.5.0/angular.min.js"
+        js "webjar:angularjs/1.5.0/angular-route.min.js"
+        js "webjar:angularjs/1.5.0/angular-resource.min.js"
+        js "webjar:ui-bootstrap/1.1.1-1/ui-bootstrap-tpls.min.js"
+        css "webjar:ui-grid/3.0.7/ui-grid.min.css"
+        js "webjar:ui-grid/3.0.7/ui-grid.min.js"
     }
     app {
         groupRef "bootstrap"
