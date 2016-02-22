@@ -41,7 +41,7 @@ public class RotationService {
         return rotationRepository.findAll();
     }
 
-    @RequestMapping("/rotation/{id}")
+    @RequestMapping("/rotations/{id}")
     public Rotation getRotation(@PathVariable("id") Integer id) {
         return rotationRepository.findOne(id);
     }
@@ -51,10 +51,18 @@ public class RotationService {
         return rotationRepository.save(rotation);
     }
 
-    @RequestMapping(value = "/rotation/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/rotations/{id}", method = RequestMethod.PUT)
     public Rotation updateRotation(@PathVariable("id") Integer id, @RequestBody Rotation rotation) {
         rotation.setId(id);
         return rotationRepository.save(rotation);
+    }
+
+    @RequestMapping(value = "/rotations/{id}", method = RequestMethod.DELETE)
+    public void deletePerson(@PathVariable("id") Integer id) {
+        Rotation person = rotationRepository.findOne(id);
+        if (person != null ){
+            rotationRepository.delete(id);
+        }
     }
 
 }

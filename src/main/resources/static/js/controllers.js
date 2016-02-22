@@ -34,47 +34,198 @@ app.controller('headerCtrl', ['$scope',
 
 app.controller('homeTabCtrl', ['$scope', '$location',
     function ($scope, $location) {
-         $scope.scheduleTabActive = function() {
+        $scope.scheduleTabActive = function () {
             return $location.path() === '/schedule' ? "active" : "";
         };
-        $scope.personsTabActive = function() {
+        $scope.personsTabActive = function () {
             return $location.path() === '/persons' ? "active" : "";
         };
-        $scope.rolesTabActive = function() {
+        $scope.rolesTabActive = function () {
             return $location.path() === '/roles' ? "active" : "";
         };
-        $scope.rotationsTabActive = function() {
+        $scope.rotationsTabActive = function () {
             return $location.path() === '/rotations' ? "active" : "";
         };
     }]);
 
-app.controller('scheduleCtrl', ['$scope', '$timeout', 'scheduleService',
-    function ($scope, $timeout, scheduleService) {
+app.controller('scheduleCtrl', ['$scope', '$timeout', 'Schedule',
+    function ($scope, $timeout, Schedule) {
         (function callService() {
-            scheduleService.get(function (data) {
+            Schedule.get(function (data) {
                 $scope.schedule = data.schedule;
                 $timeout(callService, 30000);
             });
         })();
     }]);
 
-app.controller('personsCtrl', ['$scope', 'personService',
-    function ($scope, personService) {
-        personService.persons.query(function (data) {
-            $scope.persons = data;
+app.controller('personsCtrl', ['$scope', 'Person',
+    function ($scope, Person) {
+        Person.query(function (data) {
+            $scope.gridOptions.data = data;
         });
+
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: true,
+            enableFiltering: true
+        };
+
+        $scope.gridOptions.columnDefs = [
+            {name: 'firstName', cellEditableCondition: true},
+            {name: 'lastName', cellEditableCondition: true},
+            {name: 'email', cellEditableCondition: true}
+        ];
+
+        $scope.addNewItem = function () {
+            $scope.gridOptions.data.push({firstName: '', lastName: '', email: ''});
+        };
+
+        $scope.deleteItem = function () {
+            angular.forEach($scope.gridApi.selection.getSelectedRows(), function (row, index) {
+                var person = new Person(row);
+                if (person.id) {
+                    row.isSaving = true;
+                    $scope.gridApi.rowEdit.setSavePromise(row, person.$remove(function () {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                    }));
+                }
+            });
+        };
+
+        $scope.saveRow = function (row) {
+            var person = new Person(row);
+            if (person.id) {
+                $scope.gridApi.rowEdit.setSavePromise(row, person.$update());
+            }
+            else {
+                $scope.gridApi.rowEdit.setSavePromise(row, person.$save(function (result) {
+                    row.id = result.id;
+                }));
+            }
+        };
+
+        $scope.gridOptions.onRegisterApi = function (gridApi) {
+            $scope.gridApi = gridApi;
+            gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+        };
     }]);
 
-app.controller('rolesCtrl', ['$scope', 'roleService',
-    function ($scope, roleService) {
-        roleService.roles.query(function (data) {
+app.controller('rolesCtrl', ['$scope', 'Role',
+    function ($scope, Role) {
+        Role.query(function (data) {
+            $scope.gridOptions.data = data;
+        });
+
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: true,
+            enableFiltering: true
+        };
+
+        $scope.gridOptions.columnDefs = [
+            {name: 'name', cellEditableCondition: true}
+        ];
+
+        $scope.addNewItem = function () {
+            $scope.gridOptions.data.push({name: ''});
+        };
+
+        $scope.deleteItem = function () {
+            angular.forEach($scope.gridApi.selection.getSelectedRows(), function (row, index) {
+                var role = new Role(row);
+                if (role.id) {
+                    row.isSaving = true;
+                    $scope.gridApi.rowEdit.setSavePromise(row, role.$remove(function () {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                    }));
+                }
+            });
+        };
+
+        $scope.saveRow = function (row) {
+            var role = new Role(row);
+            if (role.id) {
+                $scope.gridApi.rowEdit.setSavePromise(row, role.$update());
+            }
+            else {
+                $scope.gridApi.rowEdit.setSavePromise(row, role.$save(function (result) {
+                    row.id = result.id;
+                }));
+            }
+        };
+
+        $scope.gridOptions.onRegisterApi = function (gridApi) {
+            $scope.gridApi = gridApi;
+            gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+        };
+    }]);
+
+app.controller('rotationsCtrl', ['$scope', 'Rotation', 'Role',
+    function ($scope, Rotation, Role) {
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: true,
+            enableFiltering: true,
+            rowHeight: 38
+        };
+
+        Role.query(function (data) {
             $scope.roles = data;
-        });
-    }]);
 
-app.controller('rotationsCtrl', ['$scope', 'rotationService',
-    function ($scope, rotationService) {
-        rotationService.rotations.query(function (data) {
-            $scope.rotations = data;
+            Rotation.query(function (data) {
+                $scope.gridOptions.data = data;
+            });
+
+            $scope.gridOptions.columnDefs = [
+                {name: 'name', cellEditableCondition: true},
+                {name: 'role', cellEditableCondition: true, type: 'object',
+                    cellFilter: "griddropdown:editDropdownOptionsArray:editDropdownIdLabel:editDropdownValueLabel:row.entity.role.name",
+                    enableCellEdit: true,
+                    editType: 'dropdown',
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'name',
+                    editableCellTemplate: 'ui-grid/dropdownEditor',
+                    editDropdownOptionsArray: $scope.roles
+                },
+                {name: 'startDate', cellEditableCondition: true, type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
+                {name: 'interval', cellEditableCondition: true, type: 'number'}
+            ];
+
         });
+
+        $scope.addNewItem = function () {
+            $scope.gridOptions.data.push({name: ''});
+        };
+
+        $scope.deleteItem = function () {
+            angular.forEach($scope.gridApi.selection.getSelectedRows(), function (row) {
+                var rotation = new Rotation(row);
+                if (rotation.id) {
+                    row.isSaving = true;
+                    $scope.gridApi.rowEdit.setSavePromise(row, rotation.$remove(function () {
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                    }));
+                }
+            });
+        };
+
+        $scope.saveRow = function (row) {
+            if (typeof row.role === 'number') {
+                row.role = $scope.roles.find(function (element) {
+                    return element.id === row.role;
+                });
+            }
+            var rotation = new Rotation(row);
+            if (rotation.id) {
+                $scope.gridApi.rowEdit.setSavePromise(row, rotation.$update());
+            }
+            else {
+                $scope.gridApi.rowEdit.setSavePromise(row, rotation.$save());
+            }
+        };
+
+        $scope.gridOptions.onRegisterApi = function (gridApi) {
+            $scope.gridApi = gridApi;
+            gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+        };
     }]);

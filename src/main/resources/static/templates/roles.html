@@ -1,4 +1,8 @@
 <div>
-    <p>Roles</p>
-    {{ roles }}
+    <p><h2>Roles</h2></p>
+    <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-cellnav></div>
+
+    <button ng-click="addNewItem()" >Add Role</button>
+    <button ng-click="deleteItem()" >Delete Role(s)</button>
 </div>
+

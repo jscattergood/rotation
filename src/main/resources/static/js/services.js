@@ -16,27 +16,30 @@
 
 var app = angular.module('app.services', ['ngResource']);
 
-app.factory('scheduleService', ['$resource', function ($resource) {
+app.factory('Schedule', ['$resource', function ($resource) {
     return $resource('/schedule/');
 }]);
 
-app.factory('rotationService', ['$resource', function ($resource) {
-    return {
-        rotations: $resource('/rotations/'),
-        rotation: $resource('/rotation/:rotationId', { rotationId: '@id' })
-    };
+app.factory('Rotation', ['$resource', function ($resource) {
+    return $resource('/rotations/:rotationId', { rotationId: '@id' }, {
+        update: {
+            method: 'PUT'
+        }
+    });
 }]);
 
-app.factory('personService', ['$resource', function ($resource) {
-    return {
-        persons: $resource('/persons/'),
-        person: $resource('/person/:personId', { personId:'@id' })
-    };
+app.factory('Person', ['$resource', function ($resource) {
+    return $resource('/persons/:personId', { personId:'@id' }, {
+        update: {
+            method: 'PUT'
+        }
+    });
 }]);
 
-app.factory('roleService', ['$resource', function ($resource) {
-    return {
-        roles: $resource('/roles/'),
-        role: $resource('/role/:roleId', { roleId: '@id'})
-    };
+app.factory('Role', ['$resource', function ($resource) {
+    return $resource('/roles/:roleId', { roleId: '@id'}, {
+        update: {
+            method: 'PUT'
+        }
+    });
 }]);

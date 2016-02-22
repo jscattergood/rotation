@@ -41,7 +41,7 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    @RequestMapping("/role/{id}")
+    @RequestMapping("/roles/{id}")
     public Role getRole(@PathVariable("id") Integer id) {
         return roleRepository.findOne(id);
     }
@@ -51,10 +51,18 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
-    @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/roles/{id}", method = RequestMethod.PUT)
     public Role updateRole(@PathVariable("id") Integer id, @RequestBody Role role) {
         role.setId(id);
         return roleRepository.save(role);
+    }
+
+    @RequestMapping(value = "/roles/{id}", method = RequestMethod.DELETE)
+    public void deletePerson(@PathVariable("id") Integer id) {
+        Role role = roleRepository.findOne(id);
+        if (role != null ){
+            roleRepository.delete(id);
+        }
     }
 
 }

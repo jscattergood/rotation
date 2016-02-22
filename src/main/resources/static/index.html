@@ -11,13 +11,13 @@
             <p class="alignRight">{{ week }}</p>
         </div>
         <div>
-            <ul class="nav nav-tabs" data-ng-controller="homeTabCtrl">
+            <ul class="nav nav-tabs" ng-controller="homeTabCtrl">
                 <li data-ng-class="scheduleTabActive()"><a href="#/schedule">Schedule</a></li>
                 <li data-ng-class="personsTabActive()"><a href="#/persons">Persons</a></li>
                 <li data-ng-class="rolesTabActive()"><a href="#/roles">Roles</a></li>
                 <li data-ng-class="rotationsTabActive()"><a href="#/rotations">Rotations</a></li>
             </ul>
-            <div data-ng-view class="container"/>
+            <div ng-view class="container"/>
         </div>
         <script src="assets/js/app.js"></script>
     </body>

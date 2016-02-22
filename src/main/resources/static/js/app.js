@@ -17,6 +17,10 @@
 angular.module('app', [
         'ngRoute',
         'ui.grid',
+        'ui.grid.edit',
+        'ui.grid.cellNav',
+        'ui.grid.rowEdit',
+        'ui.grid.selection',
         'app.controllers',
         'app.directives',
         'app.filters',

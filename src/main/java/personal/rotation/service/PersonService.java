@@ -41,7 +41,7 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    @RequestMapping("/person/{id}")
+    @RequestMapping("/persons/{id}")
     public Person getPerson(@PathVariable("id") Integer id) {
         return personRepository.findOne(id);
     }
@@ -51,9 +51,17 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    @RequestMapping(value = "/person/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/persons/{id}", method = RequestMethod.PUT)
     public Person updatePerson(@PathVariable("id") Integer id, @RequestBody Person person) {
         person.setId(id);
         return personRepository.save(person);
+    }
+
+    @RequestMapping(value = "/persons/{id}", method = RequestMethod.DELETE)
+    public void deletePerson(@PathVariable("id") Integer id) {
+        Person person = personRepository.findOne(id);
+        if (person != null ){
+            personRepository.delete(id);
+        }
     }
 }
