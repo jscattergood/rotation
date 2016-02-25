@@ -16,14 +16,18 @@
 
 package personal.rotation.service;
 
+import org.joda.time.DateTimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import personal.rotation.domain.Role;
 import personal.rotation.domain.Rotation;
+import personal.rotation.domain.RotationMember;
 import personal.rotation.repository.RotationRepository;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
@@ -65,4 +69,40 @@ public class RotationService {
         }
     }
 
+    /**
+     * This function finds the current rotation members based upon the defined rotation schedule
+     *
+     * @return list of current rotation members
+     */
+    public List<RotationMember> findCurrentRotationMembers() {
+        Date now = new Date();
+        Map<Role, Rotation> currentRotations = new HashMap<>();
+        List<RotationMember> currentMembers = new ArrayList<>();
+        rotationRepository
+                .findAll(new Sort(Sort.Direction.DESC, "startDate")).stream()
+                .filter(r -> r.getStartDate().before(now))
+                .forEach(r -> currentRotations.putIfAbsent(r.getRole(), r));
+
+        currentRotations.forEach((role, rotation) -> {
+            List<RotationMember> members = rotation.getMembers();
+            if (!members.isEmpty()) {
+                if (members.size() == 1) {
+                    currentMembers.addAll(members);
+                    return;
+                }
+
+                long startDateMillis = rotation.getStartDate().getTime();
+                long nowDateMillis = now.getTime();
+                long intervalMillis = rotation.getInterval().longValue() * DateTimeConstants.MILLIS_PER_DAY;
+
+                long intervals = (nowDateMillis - startDateMillis) / intervalMillis;
+                int countOfMembers = members.size();
+                Long sequence = intervals % countOfMembers;
+
+                currentMembers.add(members.get(sequence.intValue()));
+            }
+        });
+
+        return currentMembers;
+    }
 }

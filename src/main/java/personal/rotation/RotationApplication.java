@@ -20,21 +20,23 @@ import de.infinit.spring.boot.autoconfigure.wro4j.GroovyWroManagerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import ro.isdc.wro.manager.factory.WroManagerFactory;
 
 import java.util.Properties;
 
 @SpringBootApplication
+@EnableScheduling
 public class RotationApplication {
 
-	private static final String WRO_CONFIG = "wro.groovy";
+    private static final String WRO_CONFIG = "wro.groovy";
 
-	@Bean
-	WroManagerFactory wroManagerFactory() {
-		return new GroovyWroManagerFactory(WRO_CONFIG, new Properties());
-	}
+    @Bean
+    WroManagerFactory wroManagerFactory() {
+        return new GroovyWroManagerFactory(WRO_CONFIG, new Properties());
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(RotationApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(RotationApplication.class, args);
+    }
 }
