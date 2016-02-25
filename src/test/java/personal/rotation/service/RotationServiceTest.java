@@ -16,8 +16,6 @@
 
 package personal.rotation.service;
 
-import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +36,7 @@ import personal.rotation.domain.Rotation;
 import personal.rotation.domain.RotationMember;
 import personal.rotation.repository.RotationRepository;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,8 +91,9 @@ public class RotationServiceTest {
         Person person2 = new Person("Jane", "Smith", "jane.smith@email.com");
         Person person3 = new Person("Jackie", "Smith", "jackie.smith@email.com");
 
-        int duration = 7 * DateTimeConstants.MILLIS_PER_DAY;
-        Date startDate = new Date(DateTimeUtils.currentTimeMillis() - (duration + 1000));
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime startTime = now.minusDays(29);
+        Date startDate = Date.from(startTime.toInstant());
         Rotation rotation = new Rotation("Rotation", role, startDate, 7);
         rotation.setMembers(getMembers(rotation, person1, person2, person3));
         rotations.add(rotation);
