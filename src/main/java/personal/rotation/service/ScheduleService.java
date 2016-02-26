@@ -35,6 +35,7 @@ import java.util.Map;
 @Transactional
 @RestController
 public class ScheduleService {
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     RotationService rotationService;
 
