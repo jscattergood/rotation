@@ -16,12 +16,16 @@
 
 package personal.rotation.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import personal.rotation.domain.Role;
+import personal.rotation.domain.RotationMember;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,8 +35,14 @@ import java.util.Map;
 @Transactional
 @RestController
 public class ScheduleService {
+    @Autowired
+    RotationService rotationService;
+
     @RequestMapping("/schedule")
-    public Map<String, String> getSchedule() {
-        return new HashMap<>();
+    public Map<Role, RotationMember> getSchedule() {
+        List<RotationMember> currentMembers = rotationService.findCurrentRotationMembers();
+        HashMap<Role, RotationMember> schedule = new HashMap<>();
+        currentMembers.forEach(rm -> schedule.put(rm.getRotation().getRole(), rm));
+        return schedule;
     }
 }

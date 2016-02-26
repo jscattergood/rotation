@@ -54,6 +54,7 @@ dependencies {
     compile 'org.webjars:angular-ui-bootstrap:1.1.1-1'
     compile 'org.webjars:ui-grid:3.0.7'
     compile 'org.webjars:angular-ui-select:0.14.8'
+    compile 'org.webjars:font-awesome:4.5.0'
     compile 'de.infinit:spring-boot-autoconfigure-wro4j:0.0.6'
     compile 'io.reactivex:rxjava:1.0.10'
     compile 'com.h2database:h2'

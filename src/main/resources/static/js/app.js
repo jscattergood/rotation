@@ -21,6 +21,7 @@ angular.module('app', [
         'ui.grid.cellNav',
         'ui.grid.rowEdit',
         'ui.grid.selection',
+        'ui.bootstrap',
         'app.controllers',
         'app.directives',
         'app.filters',

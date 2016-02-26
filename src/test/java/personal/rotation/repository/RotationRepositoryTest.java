@@ -122,4 +122,47 @@ public class RotationRepositoryTest {
 
         members.forEach(rm -> assertTrue(persons.contains(rm.getPerson())));
     }
+
+    @Test
+    @Transactional
+    public void testRemoveRotationMembers() {
+        Role role = new Role("role");
+        roleRepository.save(role);
+
+        //setup persons to be used
+        List<Person> persons = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            Person person = new Person("John", Integer.toString(i), "john." + i + "@mail.com");
+            person.addPotentialRole(role);
+            persons.add(person);
+        }
+        personRepository.save(persons);
+
+        //create members and add them to the rotation
+        Rotation rotation = new Rotation("rotation", role, new Date(), 7);
+        for (int i = 0; i < persons.size(); i++) {
+            Person person = persons.get(i);
+            RotationMember member = new RotationMember(rotation, person, i);
+            rotation.getMembers().add(member);
+        }
+        rotationRepository.save(rotation);
+
+        //fetch the rotation again and check members
+        Rotation fetchedRotation = rotationRepository.findOne(rotation.getId());
+        List<RotationMember> members = fetchedRotation.getMembers();
+        assertNotNull(members);
+
+        members.forEach(rm -> assertTrue(persons.contains(rm.getPerson())));
+
+        RotationMember firstMember = members.get(0);
+        rotation.getMembers().remove(firstMember);
+        rotationRepository.save(rotation);
+
+        //fetch the rotation again and check members
+        fetchedRotation = rotationRepository.findOne(rotation.getId());
+        members = fetchedRotation.getMembers();
+        assertNotNull(members);
+
+        members.forEach(rm -> assertFalse(rm.getPerson().equals(firstMember.getPerson())));
+    }
 }

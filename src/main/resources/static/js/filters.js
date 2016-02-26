@@ -26,6 +26,13 @@ app.filter('griddropdown', function () {
         } else if (initial) {
             return initial;
         }
-        return (input && input.name) ? input.name : '';
+        if (input) {
+            if (input.name) {
+                return input.name;
+            } else if (input.fullName) {
+                return input.fullName;
+            }
+        }
+        return '';
     };
 });

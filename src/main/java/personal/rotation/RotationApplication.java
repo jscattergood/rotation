@@ -33,7 +33,8 @@ public class RotationApplication {
 
     @Bean
     WroManagerFactory wroManagerFactory() {
-        return new GroovyWroManagerFactory(WRO_CONFIG, new Properties());
+        Properties configProperties = new Properties();
+        return new GroovyWroManagerFactory(WRO_CONFIG, configProperties);
     }
 
     public static void main(String[] args) {

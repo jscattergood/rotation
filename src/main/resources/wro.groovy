@@ -21,9 +21,10 @@ groups {
         js "webjar:angularjs/1.5.0/angular.min.js"
         js "webjar:angularjs/1.5.0/angular-route.min.js"
         js "webjar:angularjs/1.5.0/angular-resource.min.js"
-        js "webjar:ui-bootstrap/1.1.1-1/ui-bootstrap-tpls.min.js"
+        js "webjar:angular-ui-bootstrap/1.1.1-1/ui-bootstrap-tpls.min.js"
         css "webjar:ui-grid/3.0.7/ui-grid.min.css"
         js "webjar:ui-grid/3.0.7/ui-grid.min.js"
+        css "webjar:font-awesome/css/font-awesome.min.css"
     }
     app {
         groupRef "bootstrap"

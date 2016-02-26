@@ -62,7 +62,7 @@ public class RotationService {
     }
 
     @RequestMapping(value = "/rotations/{id}", method = RequestMethod.DELETE)
-    public void deletePerson(@PathVariable("id") Integer id) {
+    public void deleteRotation(@PathVariable("id") Integer id) {
         Rotation person = rotationRepository.findOne(id);
         if (person != null ){
             rotationRepository.delete(id);
