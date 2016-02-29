@@ -70,11 +70,33 @@ public class RotationService {
     }
 
     /**
+     * This function finds the last rotation members based upon the defined rotation schedule
+     *
+     * @return list of rotation members
+     */
+    public List<RotationMember> findLastRotationMembers() {
+        return findRotationMembers(-1);
+    }
+
+    /**
      * This function finds the current rotation members based upon the defined rotation schedule
      *
-     * @return list of current rotation members
+     * @return list of rotation members
      */
     public List<RotationMember> findCurrentRotationMembers() {
+        return findRotationMembers(0);
+    }
+
+    /**
+     * This function finds the next rotation members based upon the defined rotation schedule
+     *
+     * @return list of rotation members
+     */
+    public List<RotationMember> findNextRotationMembers() {
+        return findRotationMembers(1);
+    }
+
+    private List<RotationMember> findRotationMembers(int intervalOffset) {
         Date now = new Date();
         Map<Role, Rotation> currentRotations = new HashMap<>();
         List<RotationMember> currentMembers = new ArrayList<>();
@@ -97,12 +119,17 @@ public class RotationService {
 
                 long intervals = (nowDateMillis - startDateMillis) / intervalMillis;
                 int countOfMembers = members.size();
-                Long sequence = intervals % countOfMembers;
+                Long sequence = (intervals + intervalOffset) % countOfMembers;
 
                 currentMembers.add(members.get(sequence.intValue()));
             }
         });
 
+        currentMembers.sort((o1, o2) -> {
+            String roleName1 = o1.getRotation().getRole().getName();
+            String roleName2 = o2.getRotation().getRole().getName();
+            return roleName1.compareTo(roleName2);
+        });
         return currentMembers;
     }
 }

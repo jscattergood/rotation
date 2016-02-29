@@ -17,7 +17,9 @@
 var app = angular.module('app.services', ['ngResource']);
 
 app.factory('Schedule', ['$resource', function ($resource) {
-    return $resource('/schedule/');
+    return { current: $resource('/schedule/current'),
+             next: $resource('/schedule/next')
+    };
 }]);
 
 app.factory('Rotation', ['$resource', function ($resource) {

@@ -1,4 +1,29 @@
 <div>
-    <p><h2>Schedule</h2></p>
-    {{ schedule }}
+    <p><h2>Current Rotation</h2></p>
+</div>
+<div class="tiles">
+    <div class="tile"
+         ng-repeat="member in current">
+        <div class="role">
+            {{member.rotation.role.name}}
+        </div>
+        <div class="member">
+            {{member.person.fullName}}
+        </div>
+    </div>
+</div>
+<p></p>
+<div>
+    <p><h2>Next Rotation</h2></p>
+</div>
+<div class="tiles">
+    <div class="tile"
+         ng-repeat="member in next">
+        <div class="role">
+            {{member.rotation.role.name}}
+        </div>
+        <div class="member">
+            {{member.person.fullName}}
+        </div>
+    </div>
 </div>

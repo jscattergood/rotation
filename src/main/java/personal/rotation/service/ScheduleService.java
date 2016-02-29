@@ -21,12 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import personal.rotation.domain.Role;
 import personal.rotation.domain.RotationMember;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/18/2016
@@ -39,11 +36,18 @@ public class ScheduleService {
     @Autowired
     RotationService rotationService;
 
-    @RequestMapping("/schedule")
-    public Map<Role, RotationMember> getSchedule() {
-        List<RotationMember> currentMembers = rotationService.findCurrentRotationMembers();
-        HashMap<Role, RotationMember> schedule = new HashMap<>();
-        currentMembers.forEach(rm -> schedule.put(rm.getRotation().getRole(), rm));
-        return schedule;
+    @RequestMapping("/schedule/last")
+    public List<RotationMember> getLastRotation() {
+        return rotationService.findLastRotationMembers();
+    }
+
+    @RequestMapping("/schedule/current")
+    public List<RotationMember> getCurrentRotation() {
+        return rotationService.findCurrentRotationMembers();
+    }
+
+    @RequestMapping("/schedule/next")
+    public List<RotationMember> getNextRotation() {
+        return rotationService.findNextRotationMembers();
     }
 }

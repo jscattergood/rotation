@@ -50,10 +50,16 @@ app.controller('homeTabCtrl', ['$scope', '$location',
 
 app.controller('scheduleCtrl', ['$scope', '$timeout', 'Schedule',
     function ($scope, $timeout, Schedule) {
-        (function callService() {
-            Schedule.get(function (data) {
-                $scope.schedule = data;
-                $timeout(callService, 30000);
+        (function getCurrent() {
+            Schedule.current.query(function (data) {
+                $scope.current = data;
+                $timeout(getCurrent, 30000);
+            });
+        })();
+        (function getNext() {
+            Schedule.next.query(function (data) {
+                $scope.next = data;
+                $timeout(getNext, 30000);
             });
         })();
     }]);
@@ -179,7 +185,7 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
             });
 
             $scope.gridOptions.columnDefs = [
-                {field: 'id', name: '', cellTemplate: 'templates/edit-button.html', width: 34 },
+                {field: 'id', name: '', cellEditableCondition: false, cellTemplate: 'templates/edit-button.html', width: 34 },
                 {name: 'name', cellEditableCondition: true},
                 {name: 'role', cellEditableCondition: true, type: 'object',
                     cellFilter: "griddropdown:editDropdownOptionsArray:editDropdownIdLabel:editDropdownValueLabel:row.entity.role.name",
@@ -223,7 +229,9 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
                 $scope.gridApi.rowEdit.setSavePromise(row, rotation.$update());
             }
             else {
-                $scope.gridApi.rowEdit.setSavePromise(row, rotation.$save());
+                $scope.gridApi.rowEdit.setSavePromise(row, rotation.$save(function (result) {
+                    row.id = result.id;
+                }));
             }
         };
 
@@ -244,9 +252,15 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
         };
     }]);
 
-app.controller('rotationMembersCtrl', ['$scope', '$uibModal', '$uibModalInstance', 'Person', 'parentGrid', 'parentRow',
-    function ($scope, $uibModal, $uibModalInstance, Person, parentGrid, parentRow) {
-        $scope.rotation = angular.copy(parentRow.entity);
+app.controller('rotationMembersCtrl', ['$scope',
+                                        '$uibModal',
+                                        '$uibModalInstance',
+                                        'Person',
+                                        'Rotation',
+                                        'parentGrid',
+                                        'parentRow',
+    function ($scope, $uibModal, $uibModalInstance, Person, Rotation, parentGrid, parentRow) {
+        $scope.rotation = new Rotation(parentRow.entity);
         $scope.gridOptions = {
             enableRowSelection: true,
             enableSelectAll: true,
@@ -259,7 +273,7 @@ app.controller('rotationMembersCtrl', ['$scope', '$uibModal', '$uibModalInstance
             $scope.persons = data;
 
             $scope.gridOptions.columnDefs = [
-                {field: 'id', name: '', cellTemplate: 'templates/edit-button.html', width: 34 },
+                {field: 'id', name: '', cellEditableCondition: false, cellTemplate: 'templates/edit-button.html', width: 34 },
                 {name: 'sequence', cellEditableCondition: true, type: 'number'},
                 {name: 'person', cellEditableCondition: true, type: 'object',
                     cellFilter: "griddropdown:editDropdownOptionsArray:editDropdownIdLabel:editDropdownValueLabel:row.entity.person.fullName",
