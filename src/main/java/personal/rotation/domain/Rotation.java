@@ -16,10 +16,10 @@
 
 package personal.rotation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/16/2016
@@ -37,7 +37,7 @@ public class Rotation {
     private Date startDate;
     @Column(nullable = false)
     private Integer interval;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotation")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotation", orphanRemoval = true)
     private List<RotationMember> members = new ArrayList<>();
 
     protected Rotation() {
@@ -96,6 +96,15 @@ public class Rotation {
 
     public void setMembers(List<RotationMember> members) {
         this.members = members;
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("id", getId());
+        attributes.put("name", getName());
+        attributes.put("role", getRole());
+        return attributes;
     }
 }
 

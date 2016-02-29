@@ -67,7 +67,8 @@ app.controller('personsCtrl', ['$scope', 'Person',
         $scope.gridOptions = {
             enableRowSelection: true,
             enableSelectAll: true,
-            enableFiltering: true
+            enableFiltering: true,
+            enableCellEditOnFocus: true
         };
 
         $scope.gridOptions.columnDefs = [
@@ -86,7 +87,7 @@ app.controller('personsCtrl', ['$scope', 'Person',
                 if (person.id) {
                     row.isSaving = true;
                     $scope.gridApi.rowEdit.setSavePromise(row, person.$remove(function () {
-                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(row), 1);
                     }));
                 }
             });
@@ -119,7 +120,8 @@ app.controller('rolesCtrl', ['$scope', 'Role',
         $scope.gridOptions = {
             enableRowSelection: true,
             enableSelectAll: true,
-            enableFiltering: true
+            enableFiltering: true,
+            enableCellEditOnFocus: true
         };
 
         $scope.gridOptions.columnDefs = [
@@ -136,7 +138,7 @@ app.controller('rolesCtrl', ['$scope', 'Role',
                 if (role.id) {
                     row.isSaving = true;
                     $scope.gridApi.rowEdit.setSavePromise(row, role.$remove(function () {
-                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(row), 1);
                     }));
                 }
             });
@@ -204,7 +206,7 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
                 if (rotation.id) {
                     row.isSaving = true;
                     $scope.gridApi.rowEdit.setSavePromise(row, rotation.$remove(function () {
-                        $scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(row), 1);
+                        $scope.gridOptions.data.splice($scope.gridOptions.data.indexOf(row), 1);
                     }));
                 }
             });
@@ -230,8 +232,8 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
                 templateUrl: 'templates/rotationMembers.html',
                 controller: 'rotationMembersCtrl',
                 resolve: {
-                    grid: function () { return grid; },
-                    row: function () { return row; }
+                    parentGrid: function () { return grid; },
+                    parentRow: function () { return row; }
                 }
             });
         };
@@ -242,20 +244,22 @@ app.controller('rotationsCtrl', ['$scope', '$uibModal', 'Rotation', 'Role',
         };
     }]);
 
-app.controller('rotationMembersCtrl', ['$scope', '$uibModalInstance', 'Person', 'grid', 'row',
-    function ($scope, $uibModalInstance, Person, grid, row) {
-        $scope.rotation = angular.copy(row.entity);
+app.controller('rotationMembersCtrl', ['$scope', '$uibModal', '$uibModalInstance', 'Person', 'parentGrid', 'parentRow',
+    function ($scope, $uibModal, $uibModalInstance, Person, parentGrid, parentRow) {
+        $scope.rotation = angular.copy(parentRow.entity);
         $scope.gridOptions = {
             enableRowSelection: true,
             enableSelectAll: true,
-            enableFiltering: true
+            enableFiltering: true,
+            enableCellEditOnFocus: true,
+            rowHeight: 38
         };
-
 
         Person.query(function (data) {
             $scope.persons = data;
 
             $scope.gridOptions.columnDefs = [
+                {field: 'id', name: '', cellTemplate: 'templates/edit-button.html', width: 34 },
                 {name: 'sequence', cellEditableCondition: true, type: 'number'},
                 {name: 'person', cellEditableCondition: true, type: 'object',
                     cellFilter: "griddropdown:editDropdownOptionsArray:editDropdownIdLabel:editDropdownValueLabel:row.entity.person.fullName",
@@ -267,19 +271,23 @@ app.controller('rotationMembersCtrl', ['$scope', '$uibModalInstance', 'Person', 
                     editDropdownOptionsArray: $scope.persons
                 }
             ];
-
-            $scope.gridOptions.data = $scope.rotation.members ? $scope.rotation.members : [];
+            if (!$scope.rotation.members) {
+                $scope.rotation.members = [];
+            }
+            $scope.gridOptions.data = $scope.rotation.members;
         });
 
         $scope.addNewItem = function () {
-            $scope.gridOptions.data.push({firstName: '', person: ''});
+            $scope.gridOptions.data.push({sequence: '', person: ''});
         };
 
         $scope.deleteItem = function () {
             angular.forEach($scope.gridApi.selection.getSelectedRows(), function (row, index) {
-                $scope.rotation.members.splice($scope.rotation.members.lastIndexOf(row), 1);
+                $scope.rotation.members.splice($scope.rotation.members.indexOf(row), 1);
                 row.isSaving = true;
-                $scope.gridApi.rowEdit.setSavePromise(row, $scope.rotation.$update())
+                $scope.gridApi.rowEdit.setSavePromise(row, $scope.rotation.$update(function (result) {
+                    $scope.rotation = result;
+                }));
             });
         };
 
@@ -289,16 +297,130 @@ app.controller('rotationMembersCtrl', ['$scope', '$uibModalInstance', 'Person', 
                     return element.id === row.person;
                 });
             }
-            row.rotation = { 'id' : $scope.rotation.id };
-            if ($scope.rotation.members.indexOf(row) === -1) {
+            row.rotation = { 'id' : parentRow.entity.id };
+            if (!$scope.rotation.members) {
+                $scope.rotation.members = [];
+            }
+            var index = $scope.rotation.members.indexOf(row);
+            if (index !== -1) {
+                $scope.rotation.members[index] = row;
+            }
+            else {
                 $scope.rotation.members.push(row);
             }
-            $scope.gridApi.rowEdit.setSavePromise(row, $scope.rotation.$update());
+            $scope.gridApi.rowEdit.setSavePromise(row, $scope.rotation.$update(function (result) {
+                $scope.rotation = result;
+                $scope.gridOptions.data = $scope.rotation.members;
+            }));
+        };
+
+        $scope.editRow = function (grid, row) {
+            $uibModal.open({
+                templateUrl: 'templates/memberDelegates.html',
+                controller: 'memberDelegatesCtrl',
+                resolve: {
+                    parentGrid: function () { return grid; },
+                    parentRow: function () { return row; },
+                    rotation: function() { return $scope.rotation; }
+                }
+            });
         };
 
         $scope.close = function () {
-            row.entity = angular.extend(row.entity, $scope.rotation);
-            $uibModalInstance.close(row.entity);
+            parentRow.entity = angular.extend(parentRow.entity, $scope.rotation);
+            $uibModalInstance.close(parentRow.entity);
+        };
+
+        $scope.gridOptions.onRegisterApi = function (gridApi) {
+            $scope.gridApi = gridApi;
+            gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+        };
+    }]);
+
+app.controller('memberDelegatesCtrl', ['$scope', '$uibModalInstance', 'Person', 'parentGrid', 'parentRow', 'rotation',
+    function ($scope, $uibModalInstance, Person, parentGrid, parentRow, rotation) {
+        $scope.rotation = rotation;
+        $scope.member = angular.copy(parentRow.entity);
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: true,
+            enableFiltering: true,
+            enableCellEditOnFocus: true
+        };
+
+
+        Person.query(function (data) {
+            $scope.persons = data;
+
+            $scope.gridOptions.columnDefs = [
+                {name: 'delegate', cellEditableCondition: true, type: 'object',
+                    cellFilter: "griddropdown:editDropdownOptionsArray:editDropdownIdLabel:editDropdownValueLabel:row.entity.person.fullName",
+                    enableCellEdit: true,
+                    editType: 'dropdown',
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'fullName',
+                    editableCellTemplate: 'ui-grid/dropdownEditor',
+                    editDropdownOptionsArray: $scope.persons
+                },
+                {name: 'startDate', cellEditableCondition: true, type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
+                {name: 'endDate', cellEditableCondition: true, type: 'date', cellFilter: 'date:"yyyy-MM-dd"'}
+            ];
+
+            if (!$scope.member.delegates) {
+                $scope.member.delegates = [];
+            }
+            $scope.gridOptions.data = $scope.member.delegates;
+        });
+
+        $scope.addNewItem = function () {
+            $scope.gridOptions.data.push({delegate: '', startDate: '', endDate: ''});
+        };
+
+        function update(row) {
+            var member = $scope.rotation.members.find(function (element) {
+                return element.id === parentRow.entity.id;
+            });
+            member.delegates = angular.copy($scope.member.delegates);
+            $scope.gridApi.rowEdit.setSavePromise(row, $scope.rotation.$update(function (result) {
+                $scope.rotation = result;
+                $scope.member = $scope.rotation.members.find(function (element) {
+                    return element.id === $scope.member.id;
+                });
+                $scope.gridOptions.data = $scope.member.delegates;
+            }));
+        }
+
+        $scope.deleteItem = function () {
+            angular.forEach($scope.gridApi.selection.getSelectedRows(), function (row, index) {
+                $scope.member.delegates.splice($scope.member.delegates.indexOf(row), 1);
+                row.isSaving = true;
+                update(row);
+            });
+        };
+
+        $scope.saveRow = function (row) {
+            if (typeof row.delegate === 'number') {
+                row.delegate = $scope.persons.find(function (element) {
+                    return element.id === row.delegate;
+                });
+            }
+            row.member = { 'id' : parentRow.entity.id };
+            if (!$scope.member.delegates) {
+                $scope.member.delegates = [];
+            }
+            var index = $scope.member.delegates.indexOf(row);
+            if (index !== -1) {
+                $scope.member.delegates[index] = row;
+            }
+            else {
+                $scope.member.delegates.push(row);
+            }
+            update(row);
+        };
+
+        $scope.close = function () {
+            parentRow.entity = angular.extend(parentRow.entity, $scope.member);
+            $uibModalInstance.close(parentRow.entity);
         };
 
         $scope.gridOptions.onRegisterApi = function (gridApi) {

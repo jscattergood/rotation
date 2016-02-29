@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/16/2016
@@ -56,6 +57,11 @@ public class RotationDelegate {
     @JsonIgnore
     public RotationMember getMember() {
         return member;
+    }
+
+    @JsonProperty("member")
+    public Map<String, Object> getMemberAttributes() {
+        return member.getAttributes();
     }
 
     @JsonProperty("member")

@@ -21,12 +21,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/16/2016
  */
 @Entity
+@Table(uniqueConstraints=
+    @UniqueConstraint(columnNames = {"rotation_id", "sequence"}))
 public class RotationMember {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,8 +45,8 @@ public class RotationMember {
     @Column(nullable = false)
     private Integer sequence;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
-    private List<RotationDelegate> delegate = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member", orphanRemoval = true)
+    private List<RotationDelegate> delegates = new ArrayList<>();
 
     protected RotationMember() {
     }
@@ -67,6 +71,11 @@ public class RotationMember {
     }
 
     @JsonProperty("rotation")
+    public Map<String, Object> getRotationAttributes() {
+        return rotation.getAttributes();
+    }
+
+    @JsonProperty("rotation")
     public void setRotation(Rotation rotation) {
         this.rotation = rotation;
     }
@@ -87,11 +96,20 @@ public class RotationMember {
         this.sequence = sequence;
     }
 
-    public List<RotationDelegate> getDelegate() {
-        return delegate;
+    public List<RotationDelegate> getDelegates() {
+        return delegates;
     }
 
-    public void setDelegate(List<RotationDelegate> delegate) {
-        this.delegate = delegate;
+    public void setDelegates(List<RotationDelegate> delegates) {
+        this.delegates = delegates;
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("id", getId());
+        attributes.put("sequence", getSequence());
+        attributes.put("person", getPerson());
+        return attributes;
     }
 }

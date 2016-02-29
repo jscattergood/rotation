@@ -96,7 +96,7 @@ public class Person {
 
     public void addPotentialRole(Role role) {
         if (role != null && !getPotentialRoles().contains(role)) {
-                getPotentialRoles().add(role);
+            getPotentialRoles().add(role);
         }
     }
 }
