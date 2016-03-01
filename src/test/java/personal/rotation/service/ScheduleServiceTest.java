@@ -50,7 +50,7 @@ public class ScheduleServiceTest {
 
     @Test
     public void testServicePaths() throws Exception {
-        mockMvc.perform(get("/schedule")
+        mockMvc.perform(get("/schedule/current")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

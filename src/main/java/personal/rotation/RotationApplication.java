@@ -34,6 +34,7 @@ public class RotationApplication {
     @Bean
     WroManagerFactory wroManagerFactory() {
         Properties configProperties = new Properties();
+        configProperties.put("preProcessors", "cssUrlRewriting");
         return new GroovyWroManagerFactory(WRO_CONFIG, configProperties);
     }
 

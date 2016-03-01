@@ -44,7 +44,6 @@ repositories {
     maven { url 'http://dl.bintray.com/sbuettner/maven' }
 }
 
-
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.boot:spring-boot-starter-web'
@@ -85,5 +84,32 @@ startScripts {
         def winFileText = winScriptFile.text
         winFileText = winFileText.replaceAll('set CLASSPATH=.*', 'rem original CLASSPATH declaration replaced by:\nset CLASSPATH=%APP_HOME%\\\\lib\\\\\\*')
         winScriptFile.text = winFileText
+    }
+}
+
+task extractWebJars(type: Copy) {
+    def config = configurations.compile.resolvedConfiguration
+    def artifacts = config.resolvedArtifacts
+    configurations.compile.files(Specs.convertClosureToSpec {it.group == "org.webjars"}).each { jar ->
+        def artifact = artifacts.find {
+            it.file.toString() == jar.absolutePath
+        }
+
+        if (artifact) {
+            copy {
+                from zipTree(jar)
+                into file("${buildDir}/webjars-content/${artifact.name}")
+            }
+
+            def upStreamVersion = "${artifact.moduleVersion.id.version}"
+            upStreamVersion = upStreamVersion.replaceAll(/(-[\d.-]+)/, '')
+
+            copy {
+                from "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${upStreamVersion}",
+                        "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${artifact.moduleVersion.id.version}"
+
+                into "${buildDir}/resources/main/static/lib/${artifact.name}"
+            }
+        }
     }
 }

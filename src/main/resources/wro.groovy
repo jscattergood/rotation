@@ -16,15 +16,15 @@
 
 groups {
     bootstrap {
-        css "webjar:bootstrap/3.3.6/css/bootstrap.min.css"
-        js "webjar:jquery/2.2.2/jquery.min.js"
-        js "webjar:angularjs/1.5.0/angular.min.js"
-        js "webjar:angularjs/1.5.0/angular-route.min.js"
-        js "webjar:angularjs/1.5.0/angular-resource.min.js"
-        js "webjar:angular-ui-bootstrap/1.1.1-1/ui-bootstrap-tpls.min.js"
-        css "webjar:ui-grid/3.0.7/ui-grid.min.css"
-        js "webjar:ui-grid/3.0.7/ui-grid.min.js"
-        css "webjar:font-awesome/css/font-awesome.min.css"
+        css "/lib/bootstrap/css/bootstrap.min.css"
+        js "/lib/jquery/jquery.min.js"
+        js "/lib/angularjs/angular.min.js"
+        js "/lib/angularjs/angular-route.min.js"
+        js "/lib/angularjs/angular-resource.min.js"
+        js "/lib/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"
+        css "/lib/ui-grid/ui-grid.min.css"
+        js "/lib/ui-grid/ui-grid.min.js"
+        css "/lib/font-awesome/css/font-awesome.min.css"
     }
     app {
         groupRef "bootstrap"
