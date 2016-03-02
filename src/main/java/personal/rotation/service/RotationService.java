@@ -27,6 +27,8 @@ import personal.rotation.domain.Rotation;
 import personal.rotation.domain.RotationMember;
 import personal.rotation.repository.RotationRepository;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -74,8 +76,8 @@ public class RotationService {
      *
      * @return list of rotation members
      */
-    public List<RotationMember> findLastRotationMembers() {
-        return findRotationMembers(-1);
+    public Map<Rotation, Map<String, Object>> findLastRotationDetails() {
+        return findRotationDetails(-1);
     }
 
     /**
@@ -83,8 +85,8 @@ public class RotationService {
      *
      * @return list of rotation members
      */
-    public List<RotationMember> findCurrentRotationMembers() {
-        return findRotationMembers(0);
+    public Map<Rotation, Map<String, Object>> findCurrentRotationDetails() {
+        return findRotationDetails(0);
     }
 
     /**
@@ -92,44 +94,65 @@ public class RotationService {
      *
      * @return list of rotation members
      */
-    public List<RotationMember> findNextRotationMembers() {
-        return findRotationMembers(1);
+    public Map<Rotation, Map<String, Object>> findNextRotationDetails() {
+        return findRotationDetails(1);
     }
 
-    private List<RotationMember> findRotationMembers(int intervalOffset) {
+    private Map<Rotation, Map<String, Object>> findRotationDetails(int intervalOffset) {
+        Map<Role, Rotation> currentRotations = getCurrentRotationsByRole();
+
         Date now = new Date();
-        Map<Role, Rotation> currentRotations = new HashMap<>();
-        List<RotationMember> currentMembers = new ArrayList<>();
+        Map<Rotation, Map<String, Object>> rotationDetails =
+                new TreeMap<>((r1, r2) -> r1.getName().compareTo(r2.getName()));
+        currentRotations.forEach((role, rotation) ->
+                rotationDetails.put(rotation, findRotationDetails(intervalOffset, now.getTime(), rotation)));
+        return rotationDetails;
+    }
+
+    private Map<String, Object> findRotationDetails(int intervalOffset, long nowMillis, Rotation rotation) {
+        Map<String, Object> result = new HashMap<>();
+        Date startDate = rotation.getStartDate();
+        long startDateMillis = startDate.getTime();
+        Integer interval = rotation.getInterval();
+        long intervalMillis = interval.longValue() * DateTimeConstants.MILLIS_PER_DAY;
+        long intervals = (nowMillis - startDateMillis) / intervalMillis;
+        intervals = intervals + intervalOffset;
+
+        Date intervalStart = getStartDate(startDate, interval, intervals);
+        Date intervalEnd = getEndDate(startDate, interval, intervals);
+        result.put("startDate", intervalStart);
+        result.put("endDate", intervalEnd);
+        result.put("remainingDays",
+                Math.ceil((intervalEnd.getTime() - nowMillis) / (double) DateTimeConstants.MILLIS_PER_DAY));
+
+        List<RotationMember> members = rotation.getMembers();
+        if (!members.isEmpty()) {
+            int countOfMembers = members.size();
+            Long sequence = intervals % countOfMembers;
+            result.put("member", members.get(sequence.intValue()));
+        }
+        return result;
+    }
+
+    private Date getStartDate(Date startDate, Integer interval, long intervals) {
+        ZonedDateTime date = ZonedDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault());
+        date = date.plusDays(interval * intervals);
+        return Date.from(date.toInstant());
+    }
+
+    private Date getEndDate(Date startDate, Integer interval, long intervals) {
+        ZonedDateTime date = ZonedDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault());
+        date = date.plusDays((interval * (intervals + 1)) - 1);
+        return Date.from(date.toInstant());
+    }
+
+    private Map<Role, Rotation> getCurrentRotationsByRole() {
+        Date now = new Date();
+        Map<Role, Rotation> rotations = new HashMap<>();
         rotationRepository
                 .findAll(new Sort(Sort.Direction.DESC, "startDate")).stream()
                 .filter(r -> r.getStartDate().before(now))
-                .forEach(r -> currentRotations.putIfAbsent(r.getRole(), r));
-
-        currentRotations.forEach((role, rotation) -> {
-            List<RotationMember> members = rotation.getMembers();
-            if (!members.isEmpty()) {
-                if (members.size() == 1) {
-                    currentMembers.addAll(members);
-                    return;
-                }
-
-                long startDateMillis = rotation.getStartDate().getTime();
-                long nowDateMillis = now.getTime();
-                long intervalMillis = rotation.getInterval().longValue() * DateTimeConstants.MILLIS_PER_DAY;
-
-                long intervals = (nowDateMillis - startDateMillis) / intervalMillis;
-                int countOfMembers = members.size();
-                Long sequence = (intervals + intervalOffset) % countOfMembers;
-
-                currentMembers.add(members.get(sequence.intValue()));
-            }
-        });
-
-        currentMembers.sort((o1, o2) -> {
-            String roleName1 = o1.getRotation().getRole().getName();
-            String roleName2 = o2.getRotation().getRole().getName();
-            return roleName1.compareTo(roleName2);
-        });
-        return currentMembers;
+                .forEach(r -> rotations.putIfAbsent(r.getRole(), r));
+        return rotations;
     }
 }

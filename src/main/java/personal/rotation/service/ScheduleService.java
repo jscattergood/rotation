@@ -21,9 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import personal.rotation.domain.RotationMember;
+import personal.rotation.domain.Rotation;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/18/2016
@@ -37,17 +41,34 @@ public class ScheduleService {
     RotationService rotationService;
 
     @RequestMapping("/schedule/last")
-    public List<RotationMember> getLastRotation() {
-        return rotationService.findLastRotationMembers();
+    public List<Map<String, Object>> getLastRotation() {
+        Map<Rotation, Map<String, Object>> details = rotationService.findLastRotationDetails();
+        return formatResult(details);
     }
 
     @RequestMapping("/schedule/current")
-    public List<RotationMember> getCurrentRotation() {
-        return rotationService.findCurrentRotationMembers();
+    public List<Map<String, Object>> getCurrentRotation() {
+        Map<Rotation, Map<String, Object>> details = rotationService.findCurrentRotationDetails();
+        return formatResult(details);
     }
 
     @RequestMapping("/schedule/next")
-    public List<RotationMember> getNextRotation() {
-        return rotationService.findNextRotationMembers();
+    public List<Map<String, Object>> getNextRotation() {
+        Map<Rotation, Map<String, Object>> details = rotationService.findNextRotationDetails();
+        return formatResult(details);
+    }
+
+    private List<Map<String, Object>> formatResult(Map<Rotation, Map<String, Object>> details) {
+        List<Map<String,Object>> result = new ArrayList<>();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        details.forEach((r,d) -> {
+            d.forEach((k, v) -> {
+                if (v instanceof Date) {
+                    d.put(k, df.format(v));
+                }
+            });
+            result.add(d);
+        });
+        return result;
     }
 }

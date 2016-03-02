@@ -40,8 +40,11 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,17 +74,20 @@ public class RotationServiceTest {
     }
 
     @Test
-    public void testFindCurrentRotationMembers() throws Exception {
+    public void testFindCurrentRotationDetails() throws Exception {
         RotationService service = new RotationService();
         service.rotationRepository = getMockRotationRepository();
 
-        assertTrue(service.findCurrentRotationMembers().isEmpty());
+        assertTrue(service.findCurrentRotationDetails().isEmpty());
 
         List<Rotation> rotations = createRotations();
         when(service.rotationRepository.findAll(new Sort(Sort.Direction.DESC, "startDate")))
                 .thenReturn(rotations);
 
-        assertTrue(service.findCurrentRotationMembers().contains(rotations.get(0).getMembers().get(1)));
+        Map<Rotation, Map<String, Object>> currentRotationMembers = service.findCurrentRotationDetails();
+        Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
+        assertNotNull(rotationDetail);
+        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(1));
     }
 
     private List<Rotation> createRotations() {
