@@ -17,10 +17,15 @@
 package personal.rotation;
 
 import de.infinit.spring.boot.autoconfigure.wro4j.GroovyWroManagerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import personal.rotation.notifier.EmailNotifier;
+import personal.rotation.notifier.Notifier;
+import personal.rotation.repository.NotificationEventRepository;
 import ro.isdc.wro.manager.factory.WroManagerFactory;
 
 import java.util.Properties;
@@ -36,6 +41,17 @@ public class RotationApplication {
         Properties configProperties = new Properties();
         configProperties.put("preProcessors", "cssUrlRewriting");
         return new GroovyWroManagerFactory(WRO_CONFIG, configProperties);
+    }
+
+    @Bean
+    @Autowired
+    Notifier notifier(Environment env,
+                      @SuppressWarnings("SpringJavaAutowiringInspection")
+                      NotificationEventRepository notificationEventRepository) {
+        String host = env.getProperty("emailHost");
+        String user = env.getProperty("emailAuthUser");
+        String pass = env.getProperty("emailAuthPass");
+        return new EmailNotifier(host, user, pass, notificationEventRepository);
     }
 
     public static void main(String[] args) {

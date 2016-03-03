@@ -87,7 +87,7 @@ public class RotationServiceTest {
         Map<Rotation, Map<String, Object>> currentRotationMembers = service.findCurrentRotationDetails();
         Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
-        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(1));
+        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(1).getPerson());
     }
 
     private List<Rotation> createRotations() {

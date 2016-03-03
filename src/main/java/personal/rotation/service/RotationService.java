@@ -19,7 +19,6 @@ package personal.rotation.service;
 import org.joda.time.DateTimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import personal.rotation.domain.Role;
@@ -34,10 +33,14 @@ import java.util.*;
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
  */
-@Service
 @Transactional
 @RestController
 public class RotationService {
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
+    public static final String REMAINING_DAYS = "remainingDays";
+    public static final String MEMBER = "member";
+    public static final String INTERVAL = "interval";
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     RotationRepository rotationRepository;
@@ -120,16 +123,18 @@ public class RotationService {
 
         Date intervalStart = getStartDate(startDate, interval, intervals);
         Date intervalEnd = getEndDate(startDate, interval, intervals);
-        result.put("startDate", intervalStart);
-        result.put("endDate", intervalEnd);
-        result.put("remainingDays",
+        result.put(INTERVAL, intervals);
+        result.put(START_DATE, intervalStart);
+        result.put(END_DATE, intervalEnd);
+        result.put(REMAINING_DAYS,
                 Math.ceil((intervalEnd.getTime() - nowMillis) / (double) DateTimeConstants.MILLIS_PER_DAY));
 
         List<RotationMember> members = rotation.getMembers();
         if (!members.isEmpty()) {
             int countOfMembers = members.size();
             Long sequence = intervals % countOfMembers;
-            result.put("member", members.get(sequence.intValue()));
+            RotationMember member = members.get(sequence.intValue());
+            result.put(MEMBER, member.getPerson());
         }
         return result;
     }
@@ -150,7 +155,7 @@ public class RotationService {
         Date now = new Date();
         Map<Role, Rotation> rotations = new HashMap<>();
         rotationRepository
-                .findAll(new Sort(Sort.Direction.DESC, "startDate")).stream()
+                .findAll(new Sort(Sort.Direction.DESC, START_DATE)).stream()
                 .filter(r -> r.getStartDate().before(now))
                 .forEach(r -> rotations.putIfAbsent(r.getRole(), r));
         return rotations;

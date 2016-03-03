@@ -17,7 +17,6 @@
 package personal.rotation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import personal.rotation.domain.Role;
@@ -28,7 +27,6 @@ import java.util.List;
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
  */
-@Service
 @Transactional
 @RestController
 public class RoleService {
