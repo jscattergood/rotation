@@ -39,7 +39,7 @@ public class RotationService {
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
     public static final String REMAINING_DAYS = "remainingDays";
-    public static final String MEMBER = "member";
+    public static final String MEMBER_PERSON = "member";
     public static final String INTERVAL = "interval";
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -134,7 +134,7 @@ public class RotationService {
             int countOfMembers = members.size();
             Long sequence = intervals % countOfMembers;
             RotationMember member = members.get(sequence.intValue());
-            result.put(MEMBER, member.getPerson());
+            result.put(MEMBER_PERSON, member.getPerson());
         }
         return result;
     }

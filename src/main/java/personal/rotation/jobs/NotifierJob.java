@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import personal.rotation.domain.Person;
 import personal.rotation.domain.Rotation;
 import personal.rotation.notifier.Notifier;
+import personal.rotation.repository.NotificationEventRepository;
 import personal.rotation.service.RotationService;
 
 import java.util.Date;
@@ -37,24 +38,28 @@ public class NotifierJob {
     Notifier notifier;
     @Autowired
     RotationService rotationService;
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
+    NotificationEventRepository notificationEventRepository;
 
     @Scheduled(fixedRate=60000)
     public void notifyIfRotationChange() {
         Date now = new Date();
         Map<Rotation, Map<String, Object>> details =  rotationService.findNextRotationDetails();
         details.forEach((r, d) -> {
-            Person member = (Person) d.get(RotationService.MEMBER);
+            Person person = (Person) d.get(RotationService.MEMBER_PERSON);
             Date startDate = (Date) d.get(RotationService.START_DATE);
             Date endDate = (Date) d.get(RotationService.END_DATE);
             Integer interval = (Integer) d.get(RotationService.INTERVAL);
-            if (!alreadyNotified(r, interval, member)
+            if (!alreadyNotified(r, interval, person)
                     && startDate.getTime() - now.getTime() < DateTimeConstants.MILLIS_PER_DAY) {
-                notifier.send(r, interval, member, startDate, endDate);
+                notifier.send(r, interval, person, startDate, endDate);
             }
         });
     }
 
-    private boolean alreadyNotified(Rotation rotation, Integer interval, Person member) {
-        return false;
+    private boolean alreadyNotified(Rotation rotation, Integer interval, Person person) {
+        return !notificationEventRepository.existsByRotationIdAndIntervalAndPersonId(rotation.getId(), interval,
+                person.getId());
     }
 }

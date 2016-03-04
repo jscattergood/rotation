@@ -50,13 +50,13 @@ public class EmailNotifier implements Notifier {
     private final String host;
     private final String user;
     private final String pass;
-    private final NotificationEventRepository notificationEventRepository;
+    private final NotificationEventRepository eventRepository;
 
     public EmailNotifier(String host, String user, String pass, NotificationEventRepository eventRepository) {
         this.host = host;
         this.user = user;
         this.pass = pass;
-        this.notificationEventRepository = eventRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class EmailNotifier implements Notifier {
                 transport.close();
                 NotificationEvent event = new NotificationEvent(rotation.getId(), rotationInterval,
                         person.getId(), person.getEmail());
-                notificationEventRepository.save(event);
+                eventRepository.save(event);
             }
         } catch (MessagingException e) {
             LOGGER.error("Exception creating email", e);

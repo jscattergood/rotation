@@ -17,10 +17,20 @@
 package personal.rotation.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import personal.rotation.domain.NotificationEvent;
 
 /**
  * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 3/2/2016
  */
 public interface NotificationEventRepository extends JpaRepository<NotificationEvent, Integer> {
+    @Query("select count(e) > 0 " +
+            "from NotificationEvent e " +
+            "where e.rotationId = :rotationId " +
+            "and e.rotationInterval = :interval " +
+            "and e.personId = :personId")
+    boolean existsByRotationIdAndIntervalAndPersonId(@Param("rotationId") Integer rotationId,
+                                                     @Param("interval") Integer interval,
+                                                     @Param("personId") Integer personId);
 }

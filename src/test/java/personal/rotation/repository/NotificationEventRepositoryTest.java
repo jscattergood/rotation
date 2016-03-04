@@ -66,4 +66,20 @@ public class NotificationEventRepositoryTest {
         assertEquals(count, 1L);
 
     }
+
+    @Test
+    public void testExistsByRotationIdAndIntervalAndPersonId() {
+        NotificationEvent event = new NotificationEvent(1, 1, 1, "joe.smith@mail.com");
+        // initialize event
+        assertNull(event.getId());
+        eventRepository.save(event);
+        assertNotNull(event.getId());
+
+        // check for existence
+        assertTrue(eventRepository.existsByRotationIdAndIntervalAndPersonId(event.getRotationId(),
+                event.getRotationInterval(), event.getPersonId()));
+
+        // check for non-existent event
+        assertFalse(eventRepository.existsByRotationIdAndIntervalAndPersonId(2,2,2));
+    }
 }
