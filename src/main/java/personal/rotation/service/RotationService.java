@@ -21,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import personal.rotation.domain.Role;
-import personal.rotation.domain.Rotation;
-import personal.rotation.domain.RotationMember;
+import personal.rotation.domain.*;
 import personal.rotation.repository.RotationRepository;
 
 import java.time.ZoneId;
@@ -134,7 +132,13 @@ public class RotationService {
             int countOfMembers = members.size();
             Long sequence = intervals % countOfMembers;
             RotationMember member = members.get(sequence.intValue());
-            result.put(MEMBER_PERSON, member.getPerson());
+            // check for delegates
+            List<RotationDelegate> delegates = member.getDelegates();
+            Optional<RotationDelegate> delegate = delegates.stream().filter(p ->
+                    nowMillis >= p.getStartDate().getTime() &&
+                    nowMillis <= p.getEndDate().getTime()).findFirst();
+            Person person = delegate.isPresent() ? delegate.get().getDelegate() : member.getPerson();
+            result.put(MEMBER_PERSON, person);
         }
         return result;
     }

@@ -30,17 +30,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import personal.rotation.configuration.ServiceTestContext;
-import personal.rotation.domain.Person;
-import personal.rotation.domain.Role;
-import personal.rotation.domain.Rotation;
-import personal.rotation.domain.RotationMember;
+import personal.rotation.domain.*;
 import personal.rotation.repository.RotationRepository;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
@@ -88,6 +82,11 @@ public class RotationServiceTest {
         Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
         assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(1).getPerson());
+
+        currentRotationMembers = service.findNextRotationDetails();
+        rotationDetail = currentRotationMembers.get(rotations.get(0));
+        assertNotNull(rotationDetail);
+        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(0).getPerson());
     }
 
     private List<Rotation> createRotations() {
@@ -110,6 +109,11 @@ public class RotationServiceTest {
         List<RotationMember> members = new ArrayList<>();
         IntStream.range(0, persons.length)
                 .forEach(idx -> members.add(new RotationMember(rotation, persons[idx], idx)));
+        RotationMember member = members.get(persons.length - 1);
+        RotationDelegate delegate = new RotationDelegate(member, persons[0]);
+        delegate.setStartDate(new Date(0));
+        delegate.setEndDate(new Date(Long.MAX_VALUE));
+        member.setDelegates(Collections.singletonList(delegate));
         return members;
     }
 
