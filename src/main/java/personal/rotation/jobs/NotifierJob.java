@@ -50,7 +50,7 @@ public class NotifierJob {
             Person person = (Person) d.get(RotationService.MEMBER_PERSON);
             Date startDate = (Date) d.get(RotationService.START_DATE);
             Date endDate = (Date) d.get(RotationService.END_DATE);
-            Integer interval = (Integer) d.get(RotationService.INTERVAL);
+            Long interval = (Long) d.get(RotationService.INTERVAL);
             if (!alreadyNotified(r, interval, person)
                     && startDate.getTime() - now.getTime() < DateTimeConstants.MILLIS_PER_DAY) {
                 notifier.send(r, interval, person, startDate, endDate);
@@ -58,7 +58,7 @@ public class NotifierJob {
         });
     }
 
-    private boolean alreadyNotified(Rotation rotation, Integer interval, Person person) {
+    private boolean alreadyNotified(Rotation rotation, Long interval, Person person) {
         return !notificationEventRepository.existsByRotationIdAndIntervalAndPersonId(rotation.getId(), interval,
                 person.getId());
     }

@@ -51,7 +51,11 @@ public class RotationApplication {
         String host = env.getProperty("emailHost");
         String user = env.getProperty("emailAuthUser");
         String pass = env.getProperty("emailAuthPass");
-        return new EmailNotifier(host, user, pass, notificationEventRepository);
+        if (host != null && user != null && pass != null) {
+            return new EmailNotifier(host, user, pass, notificationEventRepository);
+        }
+        // return a stub implementation if not configured
+        return (rotation, rotationInterval, person, startDate, endDate) -> { };
     }
 
     public static void main(String[] args) {

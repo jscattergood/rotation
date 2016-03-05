@@ -60,7 +60,7 @@ public class EmailNotifier implements Notifier {
     }
 
     @Override
-    public void send(Rotation rotation, Integer rotationInterval, Person person, Date startDate, Date endDate) {
+    public void send(Rotation rotation, Long rotationInterval, Person person, Date startDate, Date endDate) {
         try {
             Properties props = System.getProperties();
             props.put(MAIL_SMTP_HOST, host);

@@ -292,7 +292,7 @@ app.controller('rotationMembersCtrl', ['$scope',
         });
 
         $scope.addNewItem = function () {
-            $scope.gridOptions.data.push({sequence: '', person: ''});
+            $scope.gridOptions.data.push({sequence: $scope.gridOptions.data.length + 1, person: ''});
         };
 
         $scope.deleteItem = function () {

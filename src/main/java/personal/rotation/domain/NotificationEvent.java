@@ -30,7 +30,7 @@ public class NotificationEvent {
     @Column(nullable = false)
     private Integer rotationId;
     @Column(nullable = false)
-    private Integer rotationInterval;
+    private Long rotationInterval;
     private Integer personId;
     private String emailAddress;
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class NotificationEvent {
     protected NotificationEvent() {
     }
 
-    public NotificationEvent(Integer rotationId, Integer rotationInterval, Integer personId, String emailAddress) {
+    public NotificationEvent(Integer rotationId, Long rotationInterval, Integer personId, String emailAddress) {
         this.rotationId = rotationId;
         this.rotationInterval = rotationInterval;
         this.personId = personId;
@@ -55,7 +55,7 @@ public class NotificationEvent {
         return rotationId;
     }
 
-    public Integer getRotationInterval() {
+    public Long getRotationInterval() {
         return rotationInterval;
     }
 

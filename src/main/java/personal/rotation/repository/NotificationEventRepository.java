@@ -31,6 +31,6 @@ public interface NotificationEventRepository extends JpaRepository<NotificationE
             "and e.rotationInterval = :interval " +
             "and e.personId = :personId")
     boolean existsByRotationIdAndIntervalAndPersonId(@Param("rotationId") Integer rotationId,
-                                                     @Param("interval") Integer interval,
+                                                     @Param("interval") Long interval,
                                                      @Param("personId") Integer personId);
 }

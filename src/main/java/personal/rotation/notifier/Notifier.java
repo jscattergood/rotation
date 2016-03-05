@@ -26,5 +26,5 @@ import java.util.Date;
  */
 @FunctionalInterface
 public interface Notifier {
-    void send(Rotation rotation, Integer rotationInterval, Person person, Date startDate, Date endDate);
+    void send(Rotation rotation, Long rotationInterval, Person person, Date startDate, Date endDate);
 }
