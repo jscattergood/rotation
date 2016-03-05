@@ -41,7 +41,7 @@ public class NotificationEventRepositoryTest {
     @Test
     public void testSaveEvent() {
         //setup event
-        NotificationEvent event = new NotificationEvent(1, 1, 1, "joe.smith@mail.com");
+        NotificationEvent event = new NotificationEvent(1, 1L, 1, "joe.smith@mail.com");
 
         //save event, verify has ID value after save
         assertNull(event.getId()); //null before save
@@ -69,7 +69,7 @@ public class NotificationEventRepositoryTest {
 
     @Test
     public void testExistsByRotationIdAndIntervalAndPersonId() {
-        NotificationEvent event = new NotificationEvent(1, 1, 1, "joe.smith@mail.com");
+        NotificationEvent event = new NotificationEvent(1, 1L, 1, "joe.smith@mail.com");
         // initialize event
         assertNull(event.getId());
         eventRepository.save(event);
@@ -80,6 +80,6 @@ public class NotificationEventRepositoryTest {
                 event.getRotationInterval(), event.getPersonId()));
 
         // check for non-existent event
-        assertFalse(eventRepository.existsByRotationIdAndIntervalAndPersonId(2,2,2));
+        assertFalse(eventRepository.existsByRotationIdAndIntervalAndPersonId(2,2L,2));
     }
 }
