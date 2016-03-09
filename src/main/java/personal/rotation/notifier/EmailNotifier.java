@@ -32,9 +32,9 @@ import java.util.Properties;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/2/2016
  */
 public class EmailNotifier implements Notifier {
-    public static final String REMINDER_SUBJECT = "%s Rotation Reminder";
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifier.class);
-    private static final String TRANSPORT_PROTOCOL = "smtps";
+    private static final String DEFAULT_PROTOCOL = "smtps";
+    private static final String REMINDER_SUBJECT = "%s Rotation Reminder";
     private static final String REMINDER = "Dear %s," +
             "\r\n\r\n" +
             "This message is to remind you that you have an upcoming %s rotation starting on %s and ending on %s." +
@@ -46,8 +46,8 @@ public class EmailNotifier implements Notifier {
     private final String pass;
     private final NotificationEventRepository eventRepository;
     private final EmailSender emailSender;
-    private String smtpPort = DefaultEmailSender.MAIL_SMTP_PORT_VALUE;
-    private String transportProtocol = TRANSPORT_PROTOCOL;
+    private String smtpPort = EmailSender.MAIL_SMTP_PORT_VALUE;
+    private String transportProtocol = DEFAULT_PROTOCOL;
 
     public EmailNotifier(String host, String user, String pass,
                          NotificationEventRepository eventRepository, EmailSender emailSender) {
@@ -70,11 +70,11 @@ public class EmailNotifier implements Notifier {
     public void send(Rotation rotation, Long rotationInterval, Person person, Date startDate, Date endDate) {
         try {
             Properties props = System.getProperties();
-            props.put(DefaultEmailSender.MAIL_SMTP_HOST, host);
-            props.put(DefaultEmailSender.MAIL_SMTP_USER, user);
-            props.put(DefaultEmailSender.MAIL_SMTP_AUTH_PASS, pass);
-            props.put(DefaultEmailSender.MAIL_SMTP_PORT, smtpPort);
-            props.put(DefaultEmailSender.MAIL_SMTP_AUTH, DefaultEmailSender.MAIL_SMTP_AUTH_VALUE);
+            props.put(EmailSender.MAIL_SMTP_HOST, host);
+            props.put(EmailSender.MAIL_SMTP_USER, user);
+            props.put(EmailSender.MAIL_SMTP_AUTH_PASS, pass);
+            props.put(EmailSender.MAIL_SMTP_PORT, smtpPort);
+            props.put(EmailSender.MAIL_SMTP_AUTH, EmailSender.MAIL_SMTP_AUTH_VALUE);
 
             String rotationName = rotation.getName();
             String subject = String.format(REMINDER_SUBJECT, rotationName);
