@@ -16,15 +16,21 @@
 
 package personal.rotation.notifier;
 
-import personal.rotation.domain.Person;
-import personal.rotation.domain.Rotation;
-
-import java.util.Date;
+import javax.mail.MessagingException;
+import java.util.Properties;
 
 /**
- * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/2/2016
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/8/2016
  */
 @FunctionalInterface
-public interface Notifier {
-    void send(Rotation rotation, Long rotationInterval, Person person, Date startDate, Date endDate);
+public interface EmailSender {
+    String MAIL_SMTP_HOST = "mail.smtp.host";
+    String MAIL_SMTP_USER = "mail.smtp.user";
+    String MAIL_SMTP_AUTH_PASS = "mail.smtp.authPass";
+    String MAIL_SMTP_PORT = "mail.smtp.port";
+    String MAIL_SMTP_AUTH = "mail.smtp.auth";
+    String MAIL_SMTP_PORT_VALUE = "587"; // gmail default
+    String MAIL_SMTP_AUTH_VALUE = "true";
+
+    void send(String email, String subject, String body, Properties props, String protocol) throws MessagingException;
 }

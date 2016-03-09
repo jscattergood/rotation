@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package personal.rotation.notifier;
+package personal.rotation.configuration;
 
-import personal.rotation.domain.Person;
-import personal.rotation.domain.Rotation;
-
-import java.util.Date;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/2/2016
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/18/2016
  */
-@FunctionalInterface
-public interface Notifier {
-    void send(Rotation rotation, Long rotationInterval, Person person, Date startDate, Date endDate);
+@Configuration
+public class NotifierTestContext {
 }

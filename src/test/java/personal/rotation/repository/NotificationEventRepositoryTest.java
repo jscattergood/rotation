@@ -28,7 +28,7 @@ import personal.rotation.domain.NotificationEvent;
 import static org.junit.Assert.*;
 
 /**
- * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 3/2/2016
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/2/2016
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {RepositoryConfiguration.class})

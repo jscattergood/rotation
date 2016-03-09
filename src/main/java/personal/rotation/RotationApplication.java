@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import personal.rotation.notifier.DefaultEmailSender;
 import personal.rotation.notifier.EmailNotifier;
 import personal.rotation.notifier.Notifier;
 import personal.rotation.repository.NotificationEventRepository;
@@ -47,12 +48,22 @@ public class RotationApplication {
     @Autowired
     Notifier notifier(Environment env,
                       @SuppressWarnings("SpringJavaAutowiringInspection")
-                      NotificationEventRepository notificationEventRepository) {
+                      NotificationEventRepository eventRepository) {
         String host = env.getProperty("emailHost");
         String user = env.getProperty("emailAuthUser");
         String pass = env.getProperty("emailAuthPass");
-        if (host != null && user != null && pass != null) {
-            return new EmailNotifier(host, user, pass, notificationEventRepository);
+        String port = env.getProperty("emailSmtpPort");
+        String protocol = env.getProperty("emailTransportProtocol");
+
+        if (host != null && user != null) {
+            EmailNotifier notifier = new EmailNotifier(host, user, pass, eventRepository, new DefaultEmailSender());
+            if (port != null) {
+                notifier.setSmtpPort(port);
+            }
+            if (protocol != null) {
+                notifier.setTransportProtocol(protocol);
+            }
+            return notifier;
         }
         // return a stub implementation if not configured
         return (rotation, rotationInterval, person, startDate, endDate) -> { };

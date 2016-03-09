@@ -19,9 +19,7 @@ package personal.rotation.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,17 +28,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import personal.rotation.configuration.ServiceTestContext;
-import personal.rotation.domain.*;
-import personal.rotation.repository.RotationRepository;
+import personal.rotation.domain.Rotation;
+import personal.rotation.repository.MockRotationRepository;
 
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,10 +48,12 @@ public class RotationServiceTest {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
+    private MockRotationRepository mockRotationRepository;
 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockRotationRepository = new MockRotationRepository();
     }
 
     @Test
@@ -70,54 +66,19 @@ public class RotationServiceTest {
     @Test
     public void testFindCurrentRotationDetails() throws Exception {
         RotationService service = new RotationService();
-        service.rotationRepository = getMockRotationRepository();
+        service.rotationRepository = mockRotationRepository.getRepository();
 
-        assertTrue(service.findCurrentRotationDetails().isEmpty());
-
-        List<Rotation> rotations = createRotations();
-        when(service.rotationRepository.findAll(new Sort(Sort.Direction.DESC, "startDate")))
-                .thenReturn(rotations);
+        List<Rotation> rotations = mockRotationRepository.getRotations();
 
         Map<Rotation, Map<String, Object>> currentRotationMembers = service.findCurrentRotationDetails();
         Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
-        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(1).getPerson());
+        assertEquals(rotationDetail.get(RotationService.MEMBER_PERSON), rotations.get(0).getMembers().get(1).getPerson());
 
         currentRotationMembers = service.findNextRotationDetails();
         rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
-        assertEquals(rotationDetail.get("member"), rotations.get(0).getMembers().get(0).getPerson());
+        assertEquals(rotationDetail.get(RotationService.MEMBER_PERSON), rotations.get(0).getMembers().get(0).getPerson());
     }
 
-    private List<Rotation> createRotations() {
-        List<Rotation> rotations = new ArrayList<>();
-        Role role = new Role("Role");
-        Person person1 = new Person("John", "Smith", "john.smith@email.com");
-        Person person2 = new Person("Jane", "Smith", "jane.smith@email.com");
-        Person person3 = new Person("Jackie", "Smith", "jackie.smith@email.com");
-
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime startTime = now.minusDays(29);
-        Date startDate = Date.from(startTime.toInstant());
-        Rotation rotation = new Rotation("Rotation", role, startDate, 7);
-        rotation.setMembers(getMembers(rotation, person1, person2, person3));
-        rotations.add(rotation);
-        return rotations;
-    }
-
-    private List<RotationMember> getMembers(Rotation rotation, Person... persons) {
-        List<RotationMember> members = new ArrayList<>();
-        IntStream.range(0, persons.length)
-                .forEach(idx -> members.add(new RotationMember(rotation, persons[idx], idx)));
-        RotationMember member = members.get(persons.length - 1);
-        RotationDelegate delegate = new RotationDelegate(member, persons[0]);
-        delegate.setStartDate(new Date(0));
-        delegate.setEndDate(new Date(Long.MAX_VALUE));
-        member.setDelegates(Collections.singletonList(delegate));
-        return members;
-    }
-
-    public RotationRepository getMockRotationRepository() {
-        return Mockito.mock(RotationRepository.class);
-    }
 }

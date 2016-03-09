@@ -22,7 +22,7 @@ import org.springframework.data.repository.query.Param;
 import personal.rotation.domain.NotificationEvent;
 
 /**
- * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 3/2/2016
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/2/2016
  */
 public interface NotificationEventRepository extends JpaRepository<NotificationEvent, Integer> {
     @Query("select count(e) > 0 " +
