@@ -29,9 +29,9 @@ angular.module('app', [
     ])
     .config(function ($routeProvider) {
         $routeProvider
-            .when('/schedule', {
-                templateUrl: 'templates/schedule.html',
-                controller: 'scheduleCtrl'
+            .when('/configuration', {
+                templateUrl: 'templates/people.html',
+                controller: 'peopleCtrl'
             })
             .when('/rotations', {
                 templateUrl: 'templates/rotations.html',
@@ -41,9 +41,13 @@ angular.module('app', [
                 templateUrl: 'templates/roles.html',
                 controller: 'rolesCtrl'
             })
-            .when('/persons', {
-                templateUrl: 'templates/persons.html',
-                controller: 'personsCtrl'
+            .when('/people', {
+                templateUrl: 'templates/people.html',
+                controller: 'peopleCtrl'
             })
-            .otherwise('/');
+            .when('/schedule', {
+                templateUrl: 'templates/schedule.html',
+                controller: 'scheduleCtrl'
+            })
+            .otherwise('/schedule');
     });

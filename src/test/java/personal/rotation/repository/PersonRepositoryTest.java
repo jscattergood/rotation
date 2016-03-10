@@ -78,11 +78,11 @@ public class PersonRepositoryTest {
         Person fetchedUpdatedPerson = personRepository.findOne(fetchedPerson.getId());
         assertEquals(fetchedPerson.getFirstName(), fetchedUpdatedPerson.getFirstName());
 
-        //verify count of persons in DB
+        //verify count of people in DB
         long personCount = personRepository.count();
         assertEquals(personCount, 1);
 
-        //get all persons, list should only have one
+        //get all people, list should only have one
         long count = personRepository.findAll().size();
         assertEquals(count, 1L);
     }

@@ -50,7 +50,7 @@ public class PersonServiceTest {
 
     @Test
     public void testServicePaths() throws Exception {
-        mockMvc.perform(get("/persons")
+        mockMvc.perform(get("/people")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

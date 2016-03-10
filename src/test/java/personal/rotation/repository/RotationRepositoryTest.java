@@ -97,19 +97,19 @@ public class RotationRepositoryTest {
         Role role = new Role("role");
         roleRepository.save(role);
 
-        //setup persons to be used
-        List<Person> persons = new ArrayList<>();
+        //setup people to be used
+        List<Person> people = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Person person = new Person("John", Integer.toString(i), "john." + i + "@mail.com");
             person.addPotentialRole(role);
-            persons.add(person);
+            people.add(person);
         }
-        personRepository.save(persons);
+        personRepository.save(people);
 
         //create members and add them to the rotation
         Rotation rotation = new Rotation("rotation", role, new Date(), 7);
-        for (int i = 0; i < persons.size(); i++) {
-            Person person = persons.get(i);
+        for (int i = 0; i < people.size(); i++) {
+            Person person = people.get(i);
             RotationMember member = new RotationMember(rotation, person, i);
             rotation.getMembers().add(member);
         }
@@ -120,7 +120,7 @@ public class RotationRepositoryTest {
         List<RotationMember> members = fetchedRotation.getMembers();
         assertNotNull(members);
 
-        members.forEach(rm -> assertTrue(persons.contains(rm.getPerson())));
+        members.forEach(rm -> assertTrue(people.contains(rm.getPerson())));
     }
 
     @Test
@@ -129,19 +129,19 @@ public class RotationRepositoryTest {
         Role role = new Role("role");
         roleRepository.save(role);
 
-        //setup persons to be used
-        List<Person> persons = new ArrayList<>();
+        //setup people to be used
+        List<Person> people = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             Person person = new Person("John", Integer.toString(i), "john." + i + "@mail.com");
             person.addPotentialRole(role);
-            persons.add(person);
+            people.add(person);
         }
-        personRepository.save(persons);
+        personRepository.save(people);
 
         //create members and add them to the rotation
         Rotation rotation = new Rotation("rotation", role, new Date(), 7);
-        for (int i = 0; i < persons.size(); i++) {
-            Person person = persons.get(i);
+        for (int i = 0; i < people.size(); i++) {
+            Person person = people.get(i);
             RotationMember member = new RotationMember(rotation, person, i);
             rotation.getMembers().add(member);
         }
@@ -152,7 +152,7 @@ public class RotationRepositoryTest {
         List<RotationMember> members = fetchedRotation.getMembers();
         assertNotNull(members);
 
-        members.forEach(rm -> assertTrue(persons.contains(rm.getPerson())));
+        members.forEach(rm -> assertTrue(people.contains(rm.getPerson())));
 
         RotationMember firstMember = members.get(0);
         rotation.getMembers().remove(firstMember);

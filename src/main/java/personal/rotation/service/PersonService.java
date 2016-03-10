@@ -34,28 +34,28 @@ public class PersonService {
     @Autowired
     PersonRepository personRepository;
 
-    @RequestMapping("/persons")
-    public List<Person> getPersons() {
+    @RequestMapping("/people")
+    public List<Person> getPeople() {
         return personRepository.findAll();
     }
 
-    @RequestMapping("/persons/{id}")
+    @RequestMapping("/people/{id}")
     public Person getPerson(@PathVariable("id") Integer id) {
         return personRepository.findOne(id);
     }
 
-    @RequestMapping(value = "/persons", method = RequestMethod.POST)
+    @RequestMapping(value = "/people", method = RequestMethod.POST)
     public Person createPerson(@RequestBody Person person) {
         return personRepository.save(person);
     }
 
-    @RequestMapping(value = "/persons/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/people/{id}", method = RequestMethod.PUT)
     public Person updatePerson(@PathVariable("id") Integer id, @RequestBody Person person) {
         person.setId(id);
         return personRepository.save(person);
     }
 
-    @RequestMapping(value = "/persons/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/people/{id}", method = RequestMethod.DELETE)
     public void deletePerson(@PathVariable("id") Integer id) {
         Person person = personRepository.findOne(id);
         if (person != null ){

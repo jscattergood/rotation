@@ -37,12 +37,12 @@ public class MockRotationRepository {
         rotations = createRotations();
     }
 
-    private static List<RotationMember> getMembers(Rotation rotation, Person... persons) {
+    private static List<RotationMember> getMembers(Rotation rotation, Person... people) {
         List<RotationMember> members = new ArrayList<>();
-        IntStream.range(0, persons.length)
-                .forEach(idx -> members.add(new RotationMember(rotation, persons[idx], idx)));
-        RotationMember member = members.get(persons.length - 1);
-        RotationDelegate delegate = new RotationDelegate(member, persons[0]);
+        IntStream.range(0, people.length)
+                .forEach(idx -> members.add(new RotationMember(rotation, people[idx], idx)));
+        RotationMember member = members.get(people.length - 1);
+        RotationDelegate delegate = new RotationDelegate(member, people[0]);
         delegate.setStartDate(new Date(0));
         delegate.setEndDate(new Date(Long.MAX_VALUE));
         member.setDelegates(Collections.singletonList(delegate));

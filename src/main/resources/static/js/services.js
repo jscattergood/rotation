@@ -31,7 +31,7 @@ app.factory('Rotation', ['$resource', function ($resource) {
 }]);
 
 app.factory('Person', ['$resource', function ($resource) {
-    return $resource('/persons/:personId', { personId:'@id' }, {
+    return $resource('/people/:personId', { personId:'@id' }, {
         update: {
             method: 'PUT'
         }

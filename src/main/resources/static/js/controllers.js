@@ -32,13 +32,13 @@ app.controller('headerCtrl', ['$scope',
         $scope.week = getWeek();
     }]);
 
-app.controller('homeTabCtrl', ['$scope', '$location',
+app.controller('configurationTabCtrl', ['$scope', '$location',
     function ($scope, $location) {
         $scope.scheduleTabActive = function () {
             return $location.path() === '/schedule' ? "active" : "";
         };
-        $scope.personsTabActive = function () {
-            return $location.path() === '/persons' ? "active" : "";
+        $scope.peopleTabActive = function () {
+            return $location.path() === '/people' ? "active" : "";
         };
         $scope.rolesTabActive = function () {
             return $location.path() === '/roles' ? "active" : "";
@@ -64,7 +64,7 @@ app.controller('scheduleCtrl', ['$scope', '$timeout', 'Schedule',
         })();
     }]);
 
-app.controller('personsCtrl', ['$scope', 'Person',
+app.controller('peopleCtrl', ['$scope', 'Person',
     function ($scope, Person) {
         Person.query(function (data) {
             $scope.gridOptions.data = data;
@@ -270,7 +270,7 @@ app.controller('rotationMembersCtrl', ['$scope',
         };
 
         Person.query(function (data) {
-            $scope.persons = data;
+            $scope.people = data;
 
             $scope.gridOptions.columnDefs = [
                 {field: 'id', name: '', cellEditableCondition: false, cellTemplate: 'templates/edit-button.html', width: 34 },
@@ -282,7 +282,7 @@ app.controller('rotationMembersCtrl', ['$scope',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'fullName',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
-                    editDropdownOptionsArray: $scope.persons
+                    editDropdownOptionsArray: $scope.people
                 }
             ];
             if (!$scope.rotation.members) {
@@ -307,7 +307,7 @@ app.controller('rotationMembersCtrl', ['$scope',
 
         $scope.saveRow = function (row) {
             if (typeof row.person === 'number') {
-                row.person = $scope.persons.find(function (element) {
+                row.person = $scope.people.find(function (element) {
                     return element.id === row.person;
                 });
             }
@@ -364,7 +364,7 @@ app.controller('memberDelegatesCtrl', ['$scope', '$uibModalInstance', 'Person', 
 
 
         Person.query(function (data) {
-            $scope.persons = data;
+            $scope.people = data;
 
             $scope.gridOptions.columnDefs = [
                 {name: 'delegate', cellEditableCondition: true, type: 'object',
@@ -374,7 +374,7 @@ app.controller('memberDelegatesCtrl', ['$scope', '$uibModalInstance', 'Person', 
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'fullName',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
-                    editDropdownOptionsArray: $scope.persons
+                    editDropdownOptionsArray: $scope.people
                 },
                 {name: 'startDate', cellEditableCondition: true, type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
                 {name: 'endDate', cellEditableCondition: true, type: 'date', cellFilter: 'date:"yyyy-MM-dd"'}
@@ -414,7 +414,7 @@ app.controller('memberDelegatesCtrl', ['$scope', '$uibModalInstance', 'Person', 
 
         $scope.saveRow = function (row) {
             if (typeof row.delegate === 'number') {
-                row.delegate = $scope.persons.find(function (element) {
+                row.delegate = $scope.people.find(function (element) {
                     return element.id === row.delegate;
                 });
             }

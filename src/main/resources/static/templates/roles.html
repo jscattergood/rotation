@@ -1,4 +1,14 @@
 <div>
+    <a class="alignRight" href="#/">Home</a>
+</div>
+<div>
+    <ul class="nav nav-tabs" ng-controller="configurationTabCtrl">
+        <li ng-class="peopleTabActive()"><a href="#/people">People</a></li>
+        <li ng-class="rolesTabActive()"><a href="#/roles">Roles</a></li>
+        <li ng-class="rotationsTabActive()"><a href="#/rotations">Rotations</a></li>
+    </ul>
+</div>
+<div>
     <p><h2>Roles</h2></p>
     <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-cellnav></div>
 
