@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package personal.rotation.jobs;
+package personal.rotation.job;
 
 import org.joda.time.DateTimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
