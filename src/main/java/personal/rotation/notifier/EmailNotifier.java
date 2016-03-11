@@ -39,7 +39,9 @@ public class EmailNotifier implements Notifier {
             "\r\n\r\n" +
             "This message is to remind you that you have an upcoming %s rotation starting on %s and ending on %s." +
             "\r\n\r\n" +
-            "If you have any questions please contact your rotation administrator";
+            "If you have any questions please contact your rotation administrator" +
+            "\r\n\r\n" +
+            "Best Regards";
 
     private final String host;
     private final String user;
@@ -76,7 +78,7 @@ public class EmailNotifier implements Notifier {
             props.put(EmailSender.MAIL_SMTP_PORT, smtpPort);
             props.put(EmailSender.MAIL_SMTP_AUTH, EmailSender.MAIL_SMTP_AUTH_VALUE);
 
-            String rotationName = rotation.getName();
+            String rotationName = rotation.getRole().getName();
             String subject = String.format(REMINDER_SUBJECT, rotationName);
 
             String firstName = person.getFirstName();

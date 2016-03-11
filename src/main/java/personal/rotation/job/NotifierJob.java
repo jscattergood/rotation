@@ -52,14 +52,14 @@ public class NotifierJob {
             Date endDate = (Date) d.get(RotationService.END_DATE);
             Long interval = (Long) d.get(RotationService.INTERVAL);
             if (!alreadyNotified(r, interval, person)
-                    && startDate.getTime() - now.getTime() < DateTimeConstants.MILLIS_PER_DAY) {
+                    && Math.abs(now.getTime() - startDate.getTime()) < DateTimeConstants.MILLIS_PER_DAY) {
                 notifier.send(r, interval, person, startDate, endDate);
             }
         });
     }
 
     private boolean alreadyNotified(Rotation rotation, Long interval, Person person) {
-        return !notificationEventRepository.existsByRotationIdAndIntervalAndPersonId(rotation.getId(), interval,
+        return notificationEventRepository.existsByRotationIdAndIntervalAndPersonId(rotation.getId(), interval,
                 person.getId());
     }
 }
