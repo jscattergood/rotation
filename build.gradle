@@ -50,7 +50,6 @@ dependencies {
     compile 'de.infinit:spring-boot-autoconfigure-wro4j:0.0.6'
     compile 'io.reactivex:rxjava:1.0.10'
     compile 'com.sun.mail:javax.mail:1.5.2'
-    compile 'com.h2database:h2'
 
     compile 'org.webjars:jquery:2.2.0'
     compile 'org.webjars:bootstrap:3.3.6'
@@ -61,6 +60,9 @@ dependencies {
     compile 'org.webjars:font-awesome:4.5.0'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    runtime 'com.h2database:h2'
+    runtime 'org.postgresql:postgresql'
 }
 
 
