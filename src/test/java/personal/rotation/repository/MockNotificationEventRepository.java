@@ -26,17 +26,24 @@ import java.util.Collections;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/8/2016
  */
 public class MockNotificationEventRepository {
-    NotificationEventRepository mock;
+    private final NotificationEventRepository mock;
 
     public MockNotificationEventRepository() {
         this.mock = Mockito.mock(NotificationEventRepository.class);
         createNotifications();
-
     }
 
     private void createNotifications() {
         NotificationEvent event = new NotificationEvent(1, 1L, 1, "joe.smith@mail.com");
         Mockito.when(mock.findAll()).thenReturn(Collections.singletonList(event));
+    }
+
+    public void setNotExists() {
+        Mockito.when(mock.existsByRotationIdAndIntervalAndPersonId(1, 1L, 2)).thenReturn(false);
+    }
+
+    public void setExists() {
+        Mockito.when(mock.existsByRotationIdAndIntervalAndPersonId(1, 1L, 2)).thenReturn(true);
     }
 
     public NotificationEvent getSavedEvent() {
