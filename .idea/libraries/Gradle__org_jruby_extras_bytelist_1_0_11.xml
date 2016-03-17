@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jruby.extras:bytelist:1.0.11">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jruby.extras/bytelist/1.0.11/922b99c627f639f26f8c20f3720673acec71a38d/bytelist-1.0.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jruby.extras/bytelist/1.0.11/e3970468f5631dc94a2ec7043e3db76ba54485f4/bytelist-1.0.11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
