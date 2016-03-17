@@ -87,14 +87,18 @@ distZip {
 }
 
 task distRpm(type: Rpm, dependsOn: "installDist") {
+    directory('/opt/navis/dashboard', 750)
     packageName "${jar.baseName}"
     version "${jar.version}"
-    user "rotation"
+    user "navis"
     os LINUX
-    from "build/install/"
-    into "/opt/rotation"
+    into("/opt/navis/${jar.baseName}/") {
+        fileMode 0750
+        from ('build/install/dashboard-app') {
+            createDirectoryEntry true
+        }
+    }
 }
-
 startScripts {
     applicationName "${jar.baseName}"
 
