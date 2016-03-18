@@ -39,8 +39,9 @@ apply plugin: "nebula.rpm"
 
 jar {
     baseName = 'rotation'
-
+    version = '0.0.9'
 }
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -87,19 +88,14 @@ distZip {
 }
 
 task distRpm(type: Rpm, dependsOn: "installDist") {
-
     packageName "${jar.baseName}"
     version "${jar.version}"
     user "navis"
     os LINUX
-    into("/opt/navis-${jar.baseName}/") {
-        fileMode 0750
-        from ('build/install/rotation') {
-            createDirectoryEntry true
-            addParentDirs false
-        }
-    }
+    from "build/install/"
+    into "/opt/rotation"
 }
+
 startScripts {
     applicationName "${jar.baseName}"
 
