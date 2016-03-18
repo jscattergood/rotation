@@ -8,12 +8,12 @@ By default, its configured to use an in-memory H2 database, but it can be config
 
 Application properties can be overriden in the usual Spring way.  The relevant properties are listed below:
 
-spring.datasource.driverClassName=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://localhost/rotation
-spring.datasource.username=rotation
-spring.datasource.password=rotation
-emailHost=<smtp host name>
-emailAuthUser=<from email address>
-emailAuthPass=<from email passworld>
-emailSmtpPort=25
-emailTransportProtocol=smtp
++ spring.datasource.driverClassName=org.postgresql.Driver
++ spring.datasource.url=jdbc:postgresql://localhost/rotation
++ spring.datasource.username=rotation
++ spring.datasource.password=rotation
++ emailHost=\<smtp host name\>
++ emailAuthUser=\<from email address\>
++ emailAuthPass=\<from email passworld\>
++ emailSmtpPort=25
++ emailTransportProtocol=smtp
