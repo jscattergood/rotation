@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+ext {
+    user = project.hasProperty('user') ? project.user : ""
+}
+
 buildscript {
     ext {
         springBootVersion = '1.3.2.RELEASE'
@@ -39,7 +43,14 @@ apply plugin: "nebula.rpm"
 
 jar {
     baseName = 'rotation'
-    version = '0.0.9'
+    version = '0.9'
+}
+
+if (project.hasProperty('buildNumber')) {
+    version = jar.version + ".${buildNumber}"
+}
+else {
+    version = jar.version
 }
 
 sourceCompatibility = 1.8
@@ -84,16 +95,21 @@ task wrapper(type: Wrapper) {
 }
 
 distZip {
-    archiveName "${jar.baseName}-${jar.version}.zip"
+    archiveName "${jar.baseName}-${version}.zip"
+}
+
+distTar {
+    archiveName "${jar.baseName}-${version}.tar"
 }
 
 task distRpm(type: Rpm, dependsOn: "installDist") {
     packageName "${jar.baseName}"
-    version "${jar.version}"
-    user "navis"
+    version "${version}"
+    user "${user}"
     os LINUX
     from "build/install/"
-    into "/opt/rotation"
+    into "/opt/${jar.baseName}"
+    link("/opt/${jar.baseName}/default", "/opt/${jar.baseName}/${version}")
 }
 
 startScripts {
