@@ -46,7 +46,7 @@ public class MockRotationService {
         details.put(START_DATE, new Date());
         details.put(END_DATE, new Date());
         details.put(REMAINING_DAYS, 0);
-        details.put(MEMBER_PERSON, person);
+        details.put(PERSON, person);
 
         Rotation rotation = new Rotation("rotation 1", new Role("role"), new Date(), 1);
         rotation.setId(1);

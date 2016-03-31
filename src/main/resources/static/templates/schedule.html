@@ -13,10 +13,10 @@
                         <div class="tile"
                              ng-repeat="details in current">
                             <div class="role">
-                                {{details.member.rotation.role.name}}
+                                {{details.role.name}}
                             </div>
-                            <div class="member">
-                                {{details.member.person.fullName}}
+                            <div class="person">
+                                {{details.person.fullName}}
                             </div>
                             <div class="time">
                                 Days remaining: {{details.remainingDays}}
@@ -36,10 +36,10 @@
                         <div class="tile"
                              ng-repeat="details in next">
                             <div class="role">
-                                {{details.member.rotation.role.name}}
+                                {{details.role.name}}
                             </div>
-                            <div class="member">
-                                {{details.member.person.fullName}}
+                            <div class="person">
+                                {{details.person.fullName}}
                             </div>
                             <div class="time">
                                 Starting: {{details.startDate}}

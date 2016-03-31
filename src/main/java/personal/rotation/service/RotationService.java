@@ -37,7 +37,8 @@ public class RotationService {
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
     public static final String REMAINING_DAYS = "remainingDays";
-    public static final String MEMBER_PERSON = "member";
+    public static final String PERSON = "person";
+    public static final String ROLE = "role";
     public static final String INTERVAL = "interval";
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -121,6 +122,7 @@ public class RotationService {
 
         Date intervalStart = getStartDate(startDate, interval, intervals);
         Date intervalEnd = getEndDate(startDate, interval, intervals);
+        result.put(ROLE, rotation.getRole());
         result.put(INTERVAL, intervals);
         result.put(START_DATE, intervalStart);
         result.put(END_DATE, intervalEnd);
@@ -138,7 +140,7 @@ public class RotationService {
                     nowMillis >= p.getStartDate().getTime() &&
                     nowMillis <= p.getEndDate().getTime()).findFirst();
             Person person = delegate.isPresent() ? delegate.get().getDelegate() : member.getPerson();
-            result.put(MEMBER_PERSON, person);
+            result.put(PERSON, person);
         }
         return result;
     }

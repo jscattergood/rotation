@@ -47,7 +47,7 @@ public class NotifierJob {
         Date now = new Date();
         Map<Rotation, Map<String, Object>> details =  rotationService.findNextRotationDetails();
         details.forEach((r, d) -> {
-            Person person = (Person) d.get(RotationService.MEMBER_PERSON);
+            Person person = (Person) d.get(RotationService.PERSON);
             Date startDate = (Date) d.get(RotationService.START_DATE);
             Date endDate = (Date) d.get(RotationService.END_DATE);
             Long interval = (Long) d.get(RotationService.INTERVAL);

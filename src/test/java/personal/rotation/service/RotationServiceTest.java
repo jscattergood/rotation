@@ -73,12 +73,12 @@ public class RotationServiceTest {
         Map<Rotation, Map<String, Object>> currentRotationMembers = service.findCurrentRotationDetails();
         Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
-        assertEquals(rotationDetail.get(RotationService.MEMBER_PERSON), rotations.get(0).getMembers().get(1).getPerson());
+        assertEquals(rotationDetail.get(RotationService.PERSON), rotations.get(0).getMembers().get(1).getPerson());
 
         currentRotationMembers = service.findNextRotationDetails();
         rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
-        assertEquals(rotationDetail.get(RotationService.MEMBER_PERSON), rotations.get(0).getMembers().get(0).getPerson());
+        assertEquals(rotationDetail.get(RotationService.PERSON), rotations.get(0).getMembers().get(0).getPerson());
     }
 
 }
