@@ -442,3 +442,26 @@ app.controller('memberDelegatesCtrl', ['$scope', '$uibModalInstance', 'Person', 
             gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
         };
     }]);
+
+app.controller('notificationsCtrl', ['$scope', 'Notification',
+    function ($scope, Notification) {
+        Notification.query(function (data) {
+            $scope.gridOptions.data = data;
+        });
+
+        $scope.gridOptions = {
+            enableRowSelection: false,
+            enableSelectAll: false,
+            enableFiltering: true,
+            enableCellEditOnFocus: false
+        };
+
+        $scope.gridOptions.columnDefs = [
+            {name: 'rotationId'},
+            {name: 'rotationInterval'},
+            {name: 'personId'},
+            {name: 'emailAddress'},
+            {name: 'notificationTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd HH:mm"'}
+        ];
+
+    }]);

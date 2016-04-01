@@ -45,3 +45,7 @@ app.factory('Role', ['$resource', function ($resource) {
         }
     });
 }]);
+
+app.factory('Notification', ['$resource', function ($resource) {
+    return $resource('/notifications/:notificationEventId', { notificationEventId: '@id'});
+}]);

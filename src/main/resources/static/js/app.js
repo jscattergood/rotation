@@ -45,6 +45,10 @@ angular.module('app', [
                 templateUrl: 'templates/people.html',
                 controller: 'peopleCtrl'
             })
+            .when('/notifications', {
+                templateUrl: 'templates/notifications.html',
+                controller: 'notificationsCtrl'
+            })
             .when('/schedule', {
                 templateUrl: 'templates/schedule.html',
                 controller: 'scheduleCtrl'
