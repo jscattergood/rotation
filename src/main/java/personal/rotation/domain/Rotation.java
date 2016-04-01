@@ -38,6 +38,7 @@ public class Rotation {
     @Column(nullable = false)
     private Integer interval;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotation", orphanRemoval = true)
+    @OrderBy("sequence ASC")
     private List<RotationMember> members = new ArrayList<>();
 
     protected Rotation() {
