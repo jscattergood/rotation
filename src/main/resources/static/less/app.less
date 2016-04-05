@@ -15,6 +15,7 @@ body, div, p, ul, li {
 body {
   padding: 20px;
   min-width: 320px;
+  background-color: whitesmoke;
 }
 
 table {
@@ -22,7 +23,7 @@ table {
 }
 
 .header {
-  background-color: #3E3E3E;
+  background-color: #3C3C3C;
   color: #ffffff;
   height: 40px;
   margin-bottom: 30px;
@@ -46,8 +47,7 @@ table {
 }
 
 .tile {
-  background-color: yellowgreen;
-  border-left: 20px solid #ffffff;
+  background-color: black;
   color: #ffffff;
   display: block;
   float: left;
@@ -56,6 +56,14 @@ table {
   padding: 6px 8px 6px 8px;
   position: relative;
   width: 33%;
+}
+
+.tile.current {
+  background-color: #F38D10;
+}
+
+.tile.next {
+  background-color: #EFBC16;
 }
 
 .tiles {
@@ -73,13 +81,18 @@ table {
   font-size: large;
   display: block;
   margin: 2px;
-  padding-bottom: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  background-color:  lightgrey;
+  color: black;
 }
 
 .time {
   font-size: large;
   display: block;
   margin: 2px;
+  padding-top: 10px;
   padding-bottom: 20px;
 }
 
