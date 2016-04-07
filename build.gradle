@@ -16,6 +16,7 @@
 
 ext {
     user = project.hasProperty('user') ? project.user : ""
+    applicationName = 'rotation'
 }
 
 buildscript {
@@ -42,7 +43,7 @@ apply plugin: 'application'
 apply plugin: "nebula.rpm"
 
 jar {
-    baseName = 'rotation'
+    baseName = project.applicationName
     version = '0.9'
     doFirst {
         def config = configurations.compile.resolvedConfiguration
@@ -121,25 +122,25 @@ task wrapper(type: Wrapper) {
 }
 
 distZip {
-    archiveName "${jar.baseName}-${version}.zip"
+    archiveName "${project.applicationName}-${version}.zip"
 }
 
 distTar {
-    archiveName "${jar.baseName}-${version}.tar"
+    archiveName "${project.applicationName}-${version}.tar"
 }
 
 task distRpm(type: Rpm, dependsOn: "installDist") {
-    packageName "${jar.baseName}"
+    packageName "${project.applicationName}"
     version "${version}"
     user "${user}"
     os LINUX
-    from "build/install/${jar.baseName}"
-    into "/opt/${jar.baseName}/${version}"
-    link("/opt/${jar.baseName}/default", "/opt/${jar.baseName}/${version}")
+    into "/opt/${project.applicationName}/${version}"
+    from "build/install/${project.applicationName}"
+    link("/opt/${project.applicationName}/default", "/opt/${project.applicationName}/${version}")
 }
 
 startScripts {
-    applicationName "${jar.baseName}"
+    applicationName "${project.applicationName}"
 
     doLast {
         def winScriptFile = file getWindowsScript()
