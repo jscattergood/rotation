@@ -133,7 +133,7 @@ task distRpm(type: Rpm, dependsOn: "installDist") {
     version "${version}"
     user "${user}"
     os LINUX
-    from "build/install/"
+    from "build/install/${jar.baseName}"
     into "/opt/${jar.baseName}/${version}"
     link("/opt/${jar.baseName}/default", "/opt/${jar.baseName}/${version}")
 }
