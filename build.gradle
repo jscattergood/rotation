@@ -116,6 +116,12 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
 }
 
+distributions {
+    main {
+        baseName = project.applicationName
+    }
+}
+
 distZip {
     archiveName "${project.applicationName}-${project.buildVersion}.zip"
 }
