@@ -125,7 +125,6 @@ distTar {
 }
 
 ospackage {
-    packageName = "${project.applicationName}"
     version = "${project.buildVersion}"
     user = "${project.user}"
     into "/opt/${project.applicationName}/${project.buildVersion}"
