@@ -16,6 +16,8 @@
 
 ext {
     user = project.hasProperty('user') ? project.user : ""
+    appVersion = '0.9'
+    buildVersion = project.hasProperty('buildNumber') ? appVersion + "." + project.buildNumber : appVersion
     applicationName = 'rotation'
 }
 
@@ -40,11 +42,11 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'application'
-apply plugin: "nebula.rpm"
+apply plugin: 'nebula.ospackage'
 
 jar {
     baseName = project.applicationName
-    version = '0.9'
+    version = project.appVersion
     doFirst {
         def config = configurations.compile.resolvedConfiguration
         def artifacts = config.resolvedArtifacts
@@ -71,13 +73,6 @@ jar {
             }
         }
     }
-}
-
-if (project.hasProperty('buildNumber')) {
-    version = jar.version + ".${buildNumber}"
-}
-else {
-    version = jar.version
 }
 
 sourceCompatibility = 1.8
@@ -122,21 +117,30 @@ task wrapper(type: Wrapper) {
 }
 
 distZip {
-    archiveName "${project.applicationName}-${version}.zip"
+    archiveName "${project.applicationName}-${project.buildVersion}.zip"
 }
 
 distTar {
-    archiveName "${project.applicationName}-${version}.tar"
+    archiveName "${project.applicationName}-${project.buildVersion}.tar"
 }
 
-task distRpm(type: Rpm, dependsOn: "installDist") {
-    packageName "${project.applicationName}"
-    version "${version}"
-    user "${user}"
-    os LINUX
-    into "/opt/${project.applicationName}/${version}"
-    from "build/install/${project.applicationName}"
-    link("/opt/${project.applicationName}/default", "/opt/${project.applicationName}/${version}")
+ospackage {
+    packageName = "${project.applicationName}"
+    version = "${project.buildVersion}"
+    user = "${project.user}"
+    into "/opt/${project.applicationName}/${project.buildVersion}"
+    from "${project.buildDir}/install/${project.applicationName}"
+    link("/opt/${project.applicationName}/default", "/opt/${project.applicationName}/${project.buildVersion}")
+}
+
+buildDeb {
+    dependsOn installDist
+}
+
+buildRpm {
+    dependsOn installDist
+    arch = NOARCH
+    os = LINUX
 }
 
 startScripts {
