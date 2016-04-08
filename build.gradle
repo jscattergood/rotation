@@ -1,24 +1,7 @@
-/*
- * Copyright 2016 John Scattergood
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 ext {
     user = project.hasProperty('user') ? project.user : ""
     appVersion = '0.9'
     buildVersion = project.hasProperty('buildNumber') ? appVersion + "." + project.buildNumber : appVersion
-    applicationName = 'rotation'
 }
 
 buildscript {
@@ -45,7 +28,7 @@ apply plugin: 'application'
 apply plugin: 'nebula.ospackage'
 
 jar {
-    baseName = project.applicationName
+    baseName = project.name
     version = project.appVersion
     doFirst {
         def config = configurations.compile.resolvedConfiguration
@@ -116,26 +99,20 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
 }
 
-distributions {
-    main {
-        baseName = project.applicationName
-    }
-}
-
 distZip {
-    archiveName "${project.applicationName}-${project.buildVersion}.zip"
+    archiveName "${project.name}-${project.buildVersion}.zip"
 }
 
 distTar {
-    archiveName "${project.applicationName}-${project.buildVersion}.tar"
+    archiveName "${project.name}-${project.buildVersion}.tar"
 }
 
 ospackage {
     version = "${project.buildVersion}"
     user = "${project.user}"
-    into "/opt/${project.applicationName}/${project.buildVersion}"
-    from "${project.buildDir}/install/${project.applicationName}"
-    link("/opt/${project.applicationName}/default", "/opt/${project.applicationName}/${project.buildVersion}")
+    into "/opt/${project.name}/${project.buildVersion}"
+    from "${project.buildDir}/install/${project.name}"
+    link("/opt/${project.name}/default", "/opt/${project.name}/${project.buildVersion}")
 }
 
 buildDeb {
@@ -149,7 +126,7 @@ buildRpm {
 }
 
 startScripts {
-    applicationName "${project.applicationName}"
+    applicationName "${project.name}"
 
     doLast {
         def winScriptFile = file getWindowsScript()
