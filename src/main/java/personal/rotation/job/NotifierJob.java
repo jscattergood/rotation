@@ -51,8 +51,9 @@ public class NotifierJob {
             Date startDate = (Date) d.get(RotationService.START_DATE);
             Date endDate = (Date) d.get(RotationService.END_DATE);
             Long interval = (Long) d.get(RotationService.INTERVAL);
-            if (!alreadyNotified(r, interval, person)
-                    && Math.abs(now.getTime() - startDate.getTime()) < DateTimeConstants.MILLIS_PER_DAY) {
+            if ((startDate.getTime() - now.getTime()) < DateTimeConstants.MILLIS_PER_DAY &&
+                    endDate.getTime() > now.getTime() &&
+                    !alreadyNotified(r, interval, person)) {
                 notifier.send(r, interval, person, startDate, endDate);
             }
         });

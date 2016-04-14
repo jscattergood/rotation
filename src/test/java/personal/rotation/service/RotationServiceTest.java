@@ -31,6 +31,7 @@ import personal.rotation.configuration.ServiceTestContext;
 import personal.rotation.domain.Rotation;
 import personal.rotation.repository.MockRotationRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -74,11 +75,15 @@ public class RotationServiceTest {
         Map<String, Object> rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
         assertEquals(rotationDetail.get(RotationService.PERSON), rotations.get(0).getMembers().get(1).getPerson());
+        assertNotEquals(rotationDetail.get(RotationService.START_DATE), new Date(0));
+        assertNotEquals(rotationDetail.get(RotationService.END_DATE), new Date(Long.MAX_VALUE));
 
         currentRotationMembers = service.findNextRotationDetails();
         rotationDetail = currentRotationMembers.get(rotations.get(0));
         assertNotNull(rotationDetail);
         assertEquals(rotationDetail.get(RotationService.PERSON), rotations.get(0).getMembers().get(0).getPerson());
+        assertNotEquals(rotationDetail.get(RotationService.START_DATE), new Date(0));
+        assertNotEquals(rotationDetail.get(RotationService.END_DATE), new Date(Long.MAX_VALUE));
     }
 
 }

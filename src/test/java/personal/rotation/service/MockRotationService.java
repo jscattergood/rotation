@@ -44,7 +44,7 @@ public class MockRotationService {
         Map<String, Object> details = new HashMap<>();
         details.put(INTERVAL, 1L);
         details.put(START_DATE, new Date());
-        details.put(END_DATE, new Date());
+        details.put(END_DATE, new Date(Long.MAX_VALUE));
         details.put(REMAINING_DAYS, 0);
         details.put(PERSON, person);
 

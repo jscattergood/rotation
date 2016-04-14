@@ -113,21 +113,15 @@ public class RotationService {
 
     private Map<String, Object> findRotationDetails(int intervalOffset, long nowMillis, Rotation rotation) {
         Map<String, Object> result = new HashMap<>();
-        Date startDate = rotation.getStartDate();
-        long startDateMillis = startDate.getTime();
+        Date rotationStartDate = rotation.getStartDate();
+        long startDateMillis = rotationStartDate.getTime();
         Integer interval = rotation.getInterval();
         long intervalMillis = interval.longValue() * DateTimeConstants.MILLIS_PER_DAY;
         long intervals = (nowMillis - startDateMillis) / intervalMillis;
         intervals = intervals + intervalOffset;
 
-        Date intervalStart = getStartDate(startDate, interval, intervals);
-        Date intervalEnd = getEndDate(startDate, interval, intervals);
         result.put(ROLE, rotation.getRole());
         result.put(INTERVAL, intervals);
-        result.put(START_DATE, intervalStart);
-        result.put(END_DATE, intervalEnd);
-        result.put(REMAINING_DAYS,
-                Math.ceil((intervalEnd.getTime() - nowMillis) / (double) DateTimeConstants.MILLIS_PER_DAY));
 
         List<RotationMember> members = rotation.getMembers();
         if (!members.isEmpty()) {
@@ -139,10 +133,35 @@ public class RotationService {
             Optional<RotationDelegate> delegate = delegates.stream().filter(p ->
                     nowMillis >= p.getStartDate().getTime() &&
                     nowMillis <= p.getEndDate().getTime()).findFirst();
-            Person person = delegate.isPresent() ? delegate.get().getDelegate() : member.getPerson();
+            Date intervalStart = getStartDate(rotationStartDate, interval, intervals);
+            Date intervalEnd = getEndDate(rotationStartDate, interval, intervals);
+
+            final Person person;
+            final Date startDate;
+            final Date endDate;
+            if (delegate.isPresent()) {
+                person = delegate.get().getDelegate();
+                startDate = delegate.get().getStartDate();
+                endDate = delegate.get().getEndDate();
+            }
+            else {
+                person = member.getPerson();
+                startDate = intervalStart;
+                endDate = intervalEnd;
+            }
             result.put(PERSON, person);
+            result.put(START_DATE, intervalStart.before(startDate) ? startDate : intervalStart);
+            result.put(END_DATE, intervalEnd.after(endDate) ? endDate : intervalEnd);
+
+            double remainingDays = intervalEnd.after(endDate) ?
+                    getRemainingDays(nowMillis, endDate) : getRemainingDays(nowMillis, intervalEnd);
+            result.put(REMAINING_DAYS, remainingDays);
         }
         return result;
+    }
+
+    private double getRemainingDays(long nowMillis, Date intervalEnd) {
+        return Math.ceil((intervalEnd.getTime() - nowMillis) / (double) DateTimeConstants.MILLIS_PER_DAY);
     }
 
     private Date getStartDate(Date startDate, Integer interval, long intervals) {
