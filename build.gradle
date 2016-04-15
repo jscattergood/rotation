@@ -110,9 +110,9 @@ distTar {
 ospackage {
     version = "${project.buildVersion}"
     user = "${project.user}"
-    into "/opt/${project.name}/${project.buildVersion}"
+    into "/opt/${project.name}/latest"
     from "${project.buildDir}/install/${project.name}"
-    link("/opt/${project.name}/default", "/opt/${project.name}/${project.buildVersion}")
+    link("/opt/${project.name}/default", "/opt/${project.name}/latest")
 }
 
 buildDeb {
