@@ -16,7 +16,6 @@
 
 package personal.rotation.service;
 
-import org.joda.time.DateTimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,8 @@ import personal.rotation.repository.RotationRepository;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+
+import static org.joda.time.DateTimeConstants.MILLIS_PER_DAY;
 
 /**
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 2/17/2016
@@ -116,7 +117,7 @@ public class RotationService {
         Date rotationStartDate = rotation.getStartDate();
         long startDateMillis = rotationStartDate.getTime();
         Integer interval = rotation.getInterval();
-        long intervalMillis = interval.longValue() * DateTimeConstants.MILLIS_PER_DAY;
+        long intervalMillis = interval.longValue() * MILLIS_PER_DAY;
         long intervals = (nowMillis - startDateMillis) / intervalMillis;
         intervals = intervals + intervalOffset;
 
@@ -132,7 +133,7 @@ public class RotationService {
             List<RotationDelegate> delegates = member.getDelegates();
             Optional<RotationDelegate> delegate = delegates.stream().filter(p ->
                     nowMillis >= p.getStartDate().getTime() &&
-                    nowMillis <= p.getEndDate().getTime()).findFirst();
+                    nowMillis <= (p.getEndDate().getTime() + MILLIS_PER_DAY)).findFirst();
             Date intervalStart = getStartDate(rotationStartDate, interval, intervals);
             Date intervalEnd = getEndDate(rotationStartDate, interval, intervals);
 
@@ -161,7 +162,7 @@ public class RotationService {
     }
 
     private double getRemainingDays(long nowMillis, Date intervalEnd) {
-        return Math.ceil((intervalEnd.getTime() - nowMillis) / (double) DateTimeConstants.MILLIS_PER_DAY);
+        return Math.ceil((intervalEnd.getTime() - nowMillis) / (double) MILLIS_PER_DAY);
     }
 
     private Date getStartDate(Date startDate, Integer interval, long intervals) {
