@@ -162,7 +162,7 @@ public class RotationService {
     }
 
     private double getRemainingDays(long nowMillis, Date intervalEnd) {
-        return Math.ceil((intervalEnd.getTime() - nowMillis) / (double) MILLIS_PER_DAY);
+        return (Math.ceil((intervalEnd.getTime() - nowMillis) / (double) MILLIS_PER_DAY)) + 1; // add the last day
     }
 
     private Date getStartDate(Date startDate, Integer interval, long intervals) {
