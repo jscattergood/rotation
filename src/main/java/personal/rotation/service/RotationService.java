@@ -133,7 +133,7 @@ public class RotationService {
             List<RotationDelegate> delegates = member.getDelegates();
             Optional<RotationDelegate> delegate = delegates.stream().filter(p ->
                     nowMillis >= p.getStartDate().getTime() &&
-                    nowMillis <= (p.getEndDate().getTime() + MILLIS_PER_DAY)).findFirst();
+                    (nowMillis - MILLIS_PER_DAY) <= p.getEndDate().getTime()).findFirst();
             Date intervalStart = getStartDate(rotationStartDate, interval, intervals);
             Date intervalEnd = getEndDate(rotationStartDate, interval, intervals);
 
