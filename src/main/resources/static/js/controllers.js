@@ -54,11 +54,15 @@ app.controller('scheduleCtrl', ['$scope', '$timeout', 'Schedule',
             Schedule.current.query(function (data) {
                 $scope.current = data;
                 $timeout(getCurrent, 30000);
+            }, function() {
+                $timeout(getCurrent, 30000);
             });
         })();
         (function getNext() {
             Schedule.next.query(function (data) {
                 $scope.next = data;
+                $timeout(getNext, 30000);
+            }, function() {
                 $timeout(getNext, 30000);
             });
         })();
