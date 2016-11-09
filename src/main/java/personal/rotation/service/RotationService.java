@@ -132,6 +132,7 @@ public class RotationService {
             // check for delegates
             List<RotationDelegate> delegates = member.getDelegates();
             Optional<RotationDelegate> delegate = delegates.stream().filter(p ->
+                    p.getStartDate() != null &&  p.getEndDate() != null &&
                     nowMillis >= p.getStartDate().getTime() &&
                     (nowMillis - MILLIS_PER_DAY) <= p.getEndDate().getTime()).findFirst();
             Date intervalStart = getStartDate(rotationStartDate, interval, intervals);
