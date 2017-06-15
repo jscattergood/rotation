@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jscattergood/rotation.svg?branch=master)](https://travis-ci.org/jscattergood/rotation)
+
 # Rotation
 
 Simple Spring Data, Web, Angular project for managing rotating schedules. It also includes a notification system that alerts the next person in the rotation when the schedule rotates.
